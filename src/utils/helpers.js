@@ -22,10 +22,11 @@ export const formatTime = (timestamp) => {
 
 export const getRandomName = () => {
   const names = [
-    'Rahul K.', 'Priya S.', 'Amit J.', 'Sneha R.', 'Vikram P.',
-    'Anjali M.', 'Rajesh D.', 'Pooja T.', 'Suresh B.', 'Meera L.',
-    'Karan G.', 'Neha V.', 'Arun K.', 'Divya S.', 'Rohit M.',
-    'Sunita P.', 'Manoj R.', 'Kavita D.', 'Sanjay T.', 'Ritu B.',
+    'Rahul K.', 'Priya S.', 'Amit J.', 'Sneha R.', 'Vikram P.', 'Anjali M.', 'Rajesh D.', 'Pooja T.', 'Suresh B.', 'Meera L.',
+    'Karan G.', 'Neha V.', 'Arun K.', 'Divya S.', 'Rohit M.', 'Sunita P.', 'Manoj R.', 'Kavita D.', 'Sanjay T.', 'Ritu B.',
+    'Deepak H.', 'Ankit L.', 'Swati N.', 'Manish J.', 'Kunal B.', 'Pankaj V.', 'Shruti M.', 'Abhishek K.', 'Roshni S.', 'Yash P.',
+    'Ishita D.', 'Varun G.', 'Sakshi R.', 'Aditya B.', 'Tanya F.', 'Gaurav H.', 'Kajal T.', 'Sameer W.', 'Preeti J.', 'Aryan N.',
+    'Jaya K.', 'Nitin S.', 'Monika G.', 'Harish P.', 'Bhavna D.', 'Suraj L.', 'Jyoti M.', 'Ravi T.', 'Sapna V.', 'Alok R.'
   ];
   return names[Math.floor(Math.random() * names.length)];
 };

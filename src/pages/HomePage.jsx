@@ -14,7 +14,7 @@ const HomePage = () => {
   const { balance, addBalance } = useWallet();
   const navigate = useNavigate();
   const [showBonus, setShowBonus] = useState(false);
-  const [winners] = useState(() => generateFakeWinners(15));
+  const [winners, setWinners] = useState(() => generateFakeWinners(15));
   const [currentWinnerIdx, setCurrentWinnerIdx] = useState(0);
   const [selectedGameForModal, setSelectedGameForModal] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -48,8 +48,28 @@ const HomePage = () => {
 
   useEffect(() => {
     const interval = setInterval(() => {
+      // Rotate the index
       setCurrentWinnerIdx(prev => (prev + 1) % winners.length);
-    }, 3000);
+      
+      // Every few seconds, update a random winner in the list to keep it fresh
+      if (Math.random() > 0.6) {
+        setWinners(prev => {
+          const newWinners = [...prev];
+          const randIdx = Math.floor(Math.random() * newWinners.length);
+          // Importing helpers inside to avoid circular deps or scope issues if any
+          const names = ['Rahul K.', 'Priya S.', 'Amit J.', 'Sneha R.', 'Vikram P.', 'Deepak H.', 'Ankit L.', 'Swati N.', 'Manish J.', 'Kunal B.', 'Abhishek K.', 'Roshni S.', 'Yash P.', 'Varun G.', 'Sakshi R.', 'Aditya B.', 'Gaurav H.', 'Sameer W.', 'Preeti J.', 'Aryan N.'];
+          const amounts = [50000, 150000, 500000, 20000, 80000];
+          
+          newWinners[randIdx] = {
+            id: Date.now() + Math.random(),
+            name: names[Math.floor(Math.random() * names.length)],
+            amount: amounts[Math.floor(Math.random() * amounts.length)],
+            game: 'Double Patti'
+          };
+          return newWinners;
+        });
+      }
+    }, 4000);
     return () => clearInterval(interval);
   }, [winners.length]);
 

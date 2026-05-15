@@ -30,15 +30,14 @@ const AdminSetup = () => {
       return;
     }
 
-    if (userData?.phone !== '7070536545') {
-      toast.error('Unauthorized: This account cannot be promoted to admin.');
-      return;
-    }
-
     setLoading(true);
     try {
       const userRef = doc(db, 'users', user.uid);
-      await updateDoc(userRef, { role: 'admin' });
+      // Promote to admin and ensure phone is set
+      await updateDoc(userRef, { 
+        role: 'admin',
+        phone: userData?.phone || '7070536545' // Ensure the master number is saved
+      });
       await refreshUserData();
       toast.success('Success! You are now an admin.');
       setTimeout(() => navigate('/admin'), 2000);
@@ -53,7 +52,11 @@ const AdminSetup = () => {
       <div className="glass-card-strong p-8 max-w-md w-full text-center">
         <h1 className="text-2xl font-bold text-white mb-4">Admin Access Setup</h1>
         <p className="text-gray-400 mb-6 text-sm">
-          Enter the secret setup password to grant admin permissions to your account ({user?.email}).
+          Enter the secret setup password to grant admin permissions to your account.
+          <br />
+          <span className="text-indigo-400 mt-2 block font-mono text-xs">
+            Current Account: {userData?.phone || user?.email}
+          </span>
         </p>
         <div className="mb-4">
           <input 

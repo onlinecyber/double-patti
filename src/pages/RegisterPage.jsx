@@ -83,7 +83,7 @@ const RegisterPage = () => {
             <motion.div initial={{ scale: 0.5 }} animate={{ scale: 1 }} exit={{ scale: 0.5 }} transition={{ type: 'spring', stiffness: 200, damping: 15 }} className="glass-card-strong p-6 sm:p-8 text-center max-w-sm mx-4">
               <motion.div animate={{ rotate: [0, 10, -10, 0], scale: [1, 1.2, 1] }} transition={{ duration: 0.5 }} className="text-4xl sm:text-5xl mb-3">🎉</motion.div>
               <h3 className="font-outfit font-bold text-lg text-white mb-1.5">Account Created!</h3>
-              <p className="text-gray-400 text-xs">Welcome to Double Patti. You've received ₹100 bonus! Redirecting...</p>
+              <p className="text-gray-400 text-xs">Welcome to Double Patti. You've received ₹10 bonus! Redirecting...</p>
               <div className="mt-3 w-full h-1 rounded-full bg-white/10 overflow-hidden">
                 <motion.div initial={{ width: 0 }} animate={{ width: '100%' }} transition={{ duration: 2, ease: 'linear' }} className="h-full bg-gradient-to-r from-indigo-600 to-green-500 rounded-full" />
               </div>

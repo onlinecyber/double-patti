@@ -107,10 +107,12 @@ const GameCard = ({ game, onJoinClick }) => {
               </div>
               
               {/* Winning Number Reveal (if resolved) */}
-              {bet.status !== 'waiting' && bet.winningNumber && (
+              {bet.status !== 'waiting' && (bet.winningNumbers || bet.winningNumber) && (
                 <div className="mt-3 pt-3 border-t border-white/10 w-full flex flex-col items-center">
-                  <span className="text-[10px] text-gray-400 font-medium uppercase tracking-wider block mb-1">Winning Number</span>
-                  <span className="text-2xl font-black text-amber-400 drop-shadow-md mb-4">{bet.winningNumber}</span>
+                  <span className="text-[10px] text-gray-400 font-medium uppercase tracking-wider block mb-1">Winning Sequence</span>
+                  <span className="text-2xl font-black text-amber-400 drop-shadow-md mb-4">
+                    {Array.isArray(bet.winningNumbers) ? bet.winningNumbers.join(', ') : bet.winningNumber}
+                  </span>
                   
                   {/* Play Again Button */}
                   <motion.button

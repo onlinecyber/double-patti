@@ -148,19 +148,17 @@ export const createGame = async (gameData) => {
   return id;
 };
 
-export const declareResult = async (gameId, winningNumber) => {
-  // Update game if it exists in the games collection (custom games)
+export const declareResult = async (gameId, winningNumbers) => {
+  // winningNumbers is an array [num1, num2]
   try {
     await updateDoc(doc(db, 'games', gameId), {
-      winningNumber,
+      winningNumbers,
       status: 'completed',
     });
   } catch (e) {
-    // If it's a default game (not in DB), ignore the error
     console.log("Not a custom db game, proceeding with bets resolution.");
   }
 
-  // Find all waiting bets for this game
   const q = query(
     collection(db, 'activeBets'),
     where('gameId', '==', gameId),
@@ -174,43 +172,43 @@ export const declareResult = async (gameId, winningNumber) => {
 
   snap.docs.forEach(betDoc => {
     const bet = betDoc.data();
-    // Check if winningNumber is among the chosen numbers
-    const isWin = bet.numbers && bet.numbers.includes(winningNumber);
-    // Calculate prize based on entry fee tiers
+    
+    // Strict Match: Both numbers must match in the EXACT SAME ORDER
+    const isWin = Array.isArray(bet.numbers) && 
+                  bet.numbers.length === 2 && 
+                  bet.numbers[0] === winningNumbers[0] && 
+                  bet.numbers[1] === winningNumbers[1];
+
     let prize = 0;
     if (isWin) {
       if (bet.entryFee === 20) prize = 50000;
       else if (bet.entryFee === 50) prize = 150000;
       else if (bet.entryFee === 100) prize = 500000;
-      else prize = bet.entryFee * 2; // Fallback
+      else prize = bet.entryFee * 100; // Default 100x
     }
 
-    // Update bet status
     batch.update(betDoc.ref, {
       status: isWin ? 'won' : 'lost',
       prize,
-      winningNumber
+      winningNumbers // Storing the 2-number result
     });
 
     if (isWin) {
-      // Reward user
       const userRef = doc(db, 'users', bet.userId);
       batch.update(userRef, {
         walletBalance: increment(prize),
         totalWins: increment(1)
       });
 
-      // Wallet transaction
       const walletRef = doc(collection(db, 'wallet'));
       batch.set(walletRef, {
         userId: bet.userId,
         type: 'credit',
         amount: prize,
-        description: `Won ${bet.gameTitle}`,
+        description: `Won ${bet.gameTitle} (Exact Match)`,
         createdAt: serverTimestamp(),
       });
     } else {
-      // Record loss
       const userRef = doc(db, 'users', bet.userId);
       batch.update(userRef, { totalLosses: increment(1) });
     }

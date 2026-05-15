@@ -21,7 +21,9 @@ const AdminLayout = () => {
       {/* Sidebar - Desktop */}
       <aside className="hidden md:flex flex-col w-60 glass-card border-r border-white/5 p-4" style={{ borderRadius: 0 }}>
         <div className="flex items-center gap-2 mb-8 px-2">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-600 to-violet-800 flex items-center justify-center text-white font-black text-sm">DP</div>
+          <div className="w-9 h-9 rounded-xl overflow-hidden flex items-center justify-center border border-white/10">
+            <img src="/logo.png" alt="Logo" className="w-full h-full object-cover" />
+          </div>
           <span className="font-outfit font-bold text-sm text-white">Admin Panel</span>
         </div>
         <nav className="space-y-1 flex-1">
@@ -52,7 +54,9 @@ const AdminLayout = () => {
           <div className="absolute inset-0 bg-black/60" />
           <motion.div initial={{ x: -260 }} animate={{ x: 0 }} className="absolute left-0 top-0 bottom-0 w-60 glass-card-strong p-4" style={{ borderRadius: 0 }} onClick={e => e.stopPropagation()}>
             <div className="flex items-center gap-2 mb-6 px-2 pt-2">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-600 to-violet-800 flex items-center justify-center text-white font-black text-sm">DP</div>
+              <div className="w-9 h-9 rounded-xl overflow-hidden flex items-center justify-center border border-white/10">
+                <img src="/logo.png" alt="Logo" className="w-full h-full object-cover" />
+              </div>
               <span className="font-outfit font-bold text-sm text-white">Admin</span>
             </div>
             <nav className="space-y-1">

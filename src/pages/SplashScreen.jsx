@@ -48,9 +48,9 @@ const SplashScreen = () => {
           initial={{ scale: 0, rotate: -180 }}
           animate={{ scale: 1, rotate: 0 }}
           transition={{ type: 'spring', stiffness: 200, damping: 15, delay: 0.2 }}
-          className="w-24 h-24 rounded-3xl bg-gradient-to-br from-indigo-600 to-violet-700 flex items-center justify-center shadow-2xl shadow-indigo-900/40 border border-indigo-500/20"
+          className="w-24 h-24 rounded-3xl overflow-hidden flex items-center justify-center shadow-2xl shadow-indigo-900/40 border border-white/10"
         >
-          <span className="text-white font-black text-3xl font-outfit">DP</span>
+          <img src="/logo.png" alt="Logo" className="w-full h-full object-cover" />
         </motion.div>
 
         <motion.div

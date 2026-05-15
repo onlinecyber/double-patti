@@ -43,8 +43,8 @@ const LoginPage = () => {
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="relative z-10 w-full max-w-[380px]">
         <div className="text-center mb-6 sm:mb-8">
           <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', stiffness: 200, damping: 15 }}
-            className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-indigo-600 to-violet-700 flex items-center justify-center mx-auto mb-3 shadow-xl shadow-indigo-900/30">
-            <span className="text-white font-black text-lg sm:text-xl font-outfit">DP</span>
+            className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl overflow-hidden flex items-center justify-center mx-auto mb-3 shadow-xl shadow-indigo-900/30 border border-white/10">
+            <img src="/logo.png" alt="Logo" className="w-full h-full object-cover" />
           </motion.div>
           <h1 className="font-outfit font-bold text-xl sm:text-2xl text-white">Welcome Back</h1>
           <p className="text-gray-500 text-xs sm:text-sm mt-1">Sign in to continue playing</p>

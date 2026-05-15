@@ -16,7 +16,20 @@ const GameCard = ({ game, onJoinClick }) => {
     
     // Listen to real-time updates for this specific game's active bet
     const unsubscribe = listenToActiveBet(userData.id, game.id, (activeBet) => {
-      setBet(activeBet);
+      if (activeBet && activeBet.createdAt) {
+        const betDate = activeBet.createdAt.toDate ? activeBet.createdAt.toDate() : new Date(activeBet.createdAt);
+        const startOfToday = new Date();
+        startOfToday.setHours(0, 0, 0, 0);
+
+        // If the bet is from a previous day, ignore it to show JOIN NOW
+        if (betDate < startOfToday) {
+          setBet(null);
+        } else {
+          setBet(activeBet);
+        }
+      } else {
+        setBet(null);
+      }
       setLoading(false);
     });
 
@@ -110,21 +123,9 @@ const GameCard = ({ game, onJoinClick }) => {
               {bet.status !== 'waiting' && (bet.winningNumbers || bet.winningNumber) && (
                 <div className="mt-3 pt-3 border-t border-white/10 w-full flex flex-col items-center">
                   <span className="text-[10px] text-gray-400 font-medium uppercase tracking-wider block mb-1">Winning Sequence</span>
-                  <span className="text-2xl font-black text-amber-400 drop-shadow-md mb-4">
+                  <span className="text-2xl font-black text-amber-400 drop-shadow-md mb-2">
                     {Array.isArray(bet.winningNumbers) ? bet.winningNumbers.join(', ') : bet.winningNumber}
                   </span>
-                  
-                  {/* Play Again Button */}
-                  <motion.button
-                    whileTap={{ scale: 0.95 }}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onJoinClick();
-                    }}
-                    className="w-full py-2.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/10 text-white text-xs font-bold transition-all"
-                  >
-                    🔄 PLAY FOR NEXT DRAW
-                  </motion.button>
                 </div>
               )}
             </div>

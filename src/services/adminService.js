@@ -121,14 +121,20 @@ export const getActiveBets = async (gameId) => {
   const q = query(
     collection(db, 'activeBets'),
     where('gameId', '==', gameId),
-    where('status', '==', 'waiting'),
-    orderBy('createdAt', 'desc')
+    where('status', '==', 'waiting')
   );
   const snap = await getDocs(q);
   const bets = snap.docs.map(d => ({ id: d.id, ...d.data() }));
 
+  // Sort in memory to avoid composite index requirement
+  const sortedBets = bets.sort((a, b) => {
+    const timeA = a.createdAt?.seconds || 0;
+    const timeB = b.createdAt?.seconds || 0;
+    return timeB - timeA;
+  });
+
   // Fetch phone numbers for each user in the bets
-  const betsWithUser = await Promise.all(bets.map(async (bet) => {
+  const betsWithUser = await Promise.all(sortedBets.map(async (bet) => {
     const userSnap = await getDoc(doc(db, 'users', bet.userId));
     return { ...bet, userPhone: userSnap.exists() ? userSnap.data().phone : 'Unknown' };
   }));

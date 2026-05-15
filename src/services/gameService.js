@@ -74,12 +74,15 @@ export const listenToActiveBet = (userId, gameId, callback) => {
       callback(null);
       return;
     }
-    // Since a user can only bet once per game, we take the first matching document
-    // Sort by createdAt just in case to get latest if duplicates exist, but query handles it simply.
-    // For MVP, we assume 1 active bet per game per user.
     const bets = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    // Return the most recently created or just the first
-    callback(bets[0]);
+    // Sort in memory to avoid composite index requirement
+    const latestBet = bets.sort((a, b) => {
+      const timeA = a.createdAt?.seconds || 0;
+      const timeB = b.createdAt?.seconds || 0;
+      return timeB - timeA;
+    })[0];
+    
+    callback(latestBet);
   });
 };
 

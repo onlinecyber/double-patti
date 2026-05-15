@@ -108,9 +108,21 @@ const GameCard = ({ game, onJoinClick }) => {
               
               {/* Winning Number Reveal (if resolved) */}
               {bet.status !== 'waiting' && bet.winningNumber && (
-                <div className="mt-3 pt-3 border-t border-white/10 w-full">
-                  <span className="text-xs text-gray-400 font-medium uppercase tracking-wider block mb-1">Winning Number</span>
-                  <span className="text-2xl font-black text-amber-400 drop-shadow-md">{bet.winningNumber}</span>
+                <div className="mt-3 pt-3 border-t border-white/10 w-full flex flex-col items-center">
+                  <span className="text-[10px] text-gray-400 font-medium uppercase tracking-wider block mb-1">Winning Number</span>
+                  <span className="text-2xl font-black text-amber-400 drop-shadow-md mb-4">{bet.winningNumber}</span>
+                  
+                  {/* Play Again Button */}
+                  <motion.button
+                    whileTap={{ scale: 0.95 }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onJoinClick();
+                    }}
+                    className="w-full py-2.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/10 text-white text-xs font-bold transition-all"
+                  >
+                    🔄 PLAY FOR NEXT DRAW
+                  </motion.button>
                 </div>
               )}
             </div>

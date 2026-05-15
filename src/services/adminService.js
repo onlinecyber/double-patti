@@ -148,15 +148,15 @@ export const createGame = async (gameData) => {
   return id;
 };
 
-export const declareResult = async (gameId, winningNumber) => {
-  // Update game if it exists in the games collection (custom games)
+export const declareResult = async (gameId, winningNumbers) => {
+  // winningNumbers is an array of 2 numbers, e.g. [5, 7]
+  
   try {
     await updateDoc(doc(db, 'games', gameId), {
-      winningNumber,
+      winningNumbers,
       status: 'completed',
     });
   } catch (e) {
-    // If it's a default game (not in DB), ignore the error
     console.log("Not a custom db game, proceeding with bets resolution.");
   }
 
@@ -174,8 +174,16 @@ export const declareResult = async (gameId, winningNumber) => {
 
   snap.docs.forEach(betDoc => {
     const bet = betDoc.data();
-    // Check if winningNumber is among the chosen numbers
-    const isWin = bet.numbers && bet.numbers.includes(winningNumber);
+    
+    // NEW LOGIC: Both user numbers must match both winning numbers
+    // Assuming bet.numbers always has 2 numbers
+    const userNumbers = bet.numbers || [];
+    
+    // Check if both user numbers are present in the winningNumbers array
+    // We sort both to ensure order doesn't matter (e.g. 5,7 matches 7,5)
+    const isWin = userNumbers.length === winningNumbers.length && 
+                  userNumbers.every((val, index) => val === winningNumbers[index]);
+
     // Calculate prize based on entry fee tiers
     let prize = 0;
     if (isWin) {
@@ -189,7 +197,7 @@ export const declareResult = async (gameId, winningNumber) => {
     batch.update(betDoc.ref, {
       status: isWin ? 'won' : 'lost',
       prize,
-      winningNumber
+      winningNumbers // Store both winning numbers in the bet record
     });
 
     if (isWin) {

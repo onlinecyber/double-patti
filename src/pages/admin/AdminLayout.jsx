@@ -3,6 +3,7 @@ import { Link, useLocation, Outlet } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 const menuItems = [
+  { path: '/admin/dashboard', label: 'Overview', icon: '📊' },
   { path: '/admin/results', label: 'Results', icon: '🎯' },
   { path: '/admin/users', label: 'Users', icon: '👥' },
   { path: '/admin/deposits', label: 'Deposits', icon: '📥' },

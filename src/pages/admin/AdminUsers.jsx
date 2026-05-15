@@ -37,7 +37,8 @@ const AdminUsers = () => {
 
   const filtered = users.filter(u =>
     u.name?.toLowerCase().includes(search.toLowerCase()) ||
-    u.email?.toLowerCase().includes(search.toLowerCase())
+    u.email?.toLowerCase().includes(search.toLowerCase()) ||
+    u.phone?.includes(search)
   );
 
   if (loading) return <div className="flex items-center justify-center h-64"><div className="w-8 h-8 border-3 border-indigo-600 border-t-transparent rounded-full animate-spin" /></div>;
@@ -54,6 +55,7 @@ const AdminUsers = () => {
               <div className="min-w-0">
                 <p className="text-white text-sm font-medium truncate">{u.name}</p>
                 <p className="text-gray-500 text-[10px] truncate">{u.email}</p>
+                {u.phone && <p className="text-indigo-400 text-[10px]">{u.phone}</p>}
               </div>
             </div>
             <div className="flex items-center gap-2 flex-wrap">

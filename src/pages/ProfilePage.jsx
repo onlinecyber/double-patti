@@ -42,6 +42,7 @@ const ProfilePage = () => {
             </div>
             <h2 className="font-outfit font-bold text-base sm:text-lg text-white">{userData?.name || 'User'}</h2>
             <p className="text-gray-500 text-xs truncate px-4">{userData?.email}</p>
+            {userData?.phone && <p className="text-indigo-400/70 text-[10px] mt-0.5 font-medium">{userData?.phone}</p>}
           </motion.div>
 
           <div className="grid grid-cols-2 gap-2 sm:gap-3 mb-4">

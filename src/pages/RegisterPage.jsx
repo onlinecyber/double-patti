@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 
 const RegisterPage = () => {
-  const [formData, setFormData] = useState({ email: '', password: '' });
+  const [formData, setFormData] = useState({ email: '', password: '', phone: '' });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -19,6 +19,8 @@ const RegisterPage = () => {
     else if (!/\S+@\S+\.\S+/.test(formData.email)) errs.email = 'Invalid email';
     if (!formData.password) errs.password = 'Password is required';
     else if (formData.password.length < 6) errs.password = 'Min 6 characters';
+    if (!formData.phone.trim()) errs.phone = 'Mobile number is required';
+    else if (!/^\d{10}$/.test(formData.phone)) errs.phone = 'Enter valid 10-digit number';
     setErrors(errs);
     return Object.keys(errs).length === 0;
   };
@@ -30,7 +32,7 @@ const RegisterPage = () => {
     try {
       // Pass a default name derived from the email since we removed the name field
       const defaultName = formData.email.split('@')[0];
-      await register(formData.email, formData.password, { name: defaultName, phone: '', referralCode: '' });
+      await register(formData.email, formData.password, { name: defaultName, phone: formData.phone, referralCode: '' });
       setShowSuccess(true);
       setTimeout(() => navigate('/home', { replace: true }), 2000);
     } catch {}
@@ -39,6 +41,7 @@ const RegisterPage = () => {
 
   const fields = [
     { key: 'email', label: 'Email Address', type: 'email', placeholder: 'you@example.com', required: true, autoComplete: 'email' },
+    { key: 'phone', label: 'Mobile Number', type: 'tel', placeholder: 'Enter 10-digit number', required: true, autoComplete: 'tel' },
     { key: 'password', label: 'Password', type: 'password', placeholder: '••••••••', required: true, autoComplete: 'new-password' },
   ];
 

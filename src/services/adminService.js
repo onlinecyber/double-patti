@@ -254,8 +254,8 @@ export const getAppSettings = async () => {
   const docSnap = await getDoc(doc(db, 'config', 'settings'));
   if (docSnap.exists()) return docSnap.data();
   return {
-    upiId: 'doublepatti@upi',
-    qrUrl: 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=doublepatti@upi&pn=DoublePatti&cu=INR',
+    upiId: '8406884196@ptaxis',
+    qrUrl: 'upi://pay?pa=8406884196@ptaxis&pn=DoublePatti&cu=INR',
     dailyBonus: 5,
     minWithdrawal: 100,
     minDeposit: 50

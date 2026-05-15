@@ -17,6 +17,7 @@ import DepositPage from './pages/DepositPage';
 import WithdrawPage from './pages/WithdrawPage';
 import ProfilePage from './pages/ProfilePage';
 import LeaderboardPage from './pages/LeaderboardPage';
+import AdminSetup from './pages/AdminSetup';
 
 // Admin
 import AdminLayout from './pages/admin/AdminLayout';
@@ -41,6 +42,7 @@ function App() {
               <Route path="/" element={<SplashScreen />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
+              <Route path="/setup-admin" element={<AdminSetup />} />
 
               {/* Protected User */}
               <Route path="/home" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />

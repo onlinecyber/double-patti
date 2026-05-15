@@ -122,6 +122,16 @@ export const defaultGames = [
     closingTime: '10:00 AM',
   },
   {
+    id: 'double-patti-1230',
+    title: 'Double Patti',
+    entryFee: 30,
+    prizePool: 80000,
+    icon: '🎲',
+    color: 'from-emerald-600 to-emerald-900',
+    openingTime: '12:30 PM',
+    closingTime: '01:00 PM',
+  },
+  {
     id: 'double-patti-50',
     title: 'Double Patti',
     entryFee: 50,
@@ -140,15 +150,5 @@ export const defaultGames = [
     color: 'from-purple-600 to-purple-900',
     openingTime: '09:30 PM',
     closingTime: '10:00 PM',
-  },
-  {
-    id: 'double-patti-1230',
-    title: 'Double Patti',
-    entryFee: 30,
-    prizePool: 80000,
-    icon: '🎲',
-    color: 'from-emerald-600 to-emerald-900',
-    openingTime: '12:30 PM',
-    closingTime: '01:00 PM',
   },
 ];

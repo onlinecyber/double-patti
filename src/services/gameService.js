@@ -118,8 +118,8 @@ export const defaultGames = [
     prizePool: 50000,
     icon: '🎰',
     color: 'from-amber-600 to-amber-900',
-    openingTime: '09:00 AM',
-    closingTime: '09:30 AM',
+    openingTime: '09:30 AM',
+    closingTime: '10:00 AM',
   },
   {
     id: 'double-patti-50',
@@ -128,8 +128,8 @@ export const defaultGames = [
     prizePool: 150000,
     icon: '🎴',
     color: 'from-red-600 to-red-900',
-    openingTime: '07:00 PM',
-    closingTime: '07:30 PM',
+    openingTime: '07:30 PM',
+    closingTime: '08:00 PM',
   },
   {
     id: 'double-patti-100',
@@ -138,8 +138,8 @@ export const defaultGames = [
     prizePool: 500000,
     icon: '🃏',
     color: 'from-purple-600 to-purple-900',
-    openingTime: '09:00 PM',
-    closingTime: '09:30 PM',
+    openingTime: '09:30 PM',
+    closingTime: '10:00 PM',
   },
   {
     id: 'double-patti-1230',
@@ -148,7 +148,7 @@ export const defaultGames = [
     prizePool: 80000,
     icon: '🎲',
     color: 'from-emerald-600 to-emerald-900',
-    openingTime: '12:00 PM',
-    closingTime: '12:30 PM',
+    openingTime: '12:30 PM',
+    closingTime: '01:00 PM',
   },
 ];

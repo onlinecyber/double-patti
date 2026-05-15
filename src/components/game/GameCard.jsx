@@ -44,7 +44,7 @@ const GameCard = ({ game, onJoinClick }) => {
           <div className="flex items-center gap-2 bg-black/30 px-4 py-2 rounded-lg border border-white/5">
             <svg className="w-3.5 h-3.5 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
             <div className="flex flex-col text-left">
-              <span className="text-[9px] text-gray-500 font-bold uppercase tracking-widest leading-none mb-1">Opens</span>
+              <span className="text-[9px] text-gray-500 font-bold uppercase tracking-widest leading-none mb-1">Draw Time</span>
               <span className="text-xs sm:text-sm text-amber-400 font-bold leading-none">{game.openingTime}</span>
             </div>
           </div>

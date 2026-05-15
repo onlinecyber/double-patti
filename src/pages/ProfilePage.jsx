@@ -92,7 +92,7 @@ const ProfilePage = () => {
           <motion.button whileTap={{ scale: 0.97 }} onClick={() => setShowLogout(true)} className="w-full py-3.5 rounded-xl bg-rose-600/10 border border-rose-600/20 text-rose-400 font-semibold text-sm active:bg-rose-600/20 min-h-[48px]" id="logout-btn">Logout</motion.button>
 
           {showLogout && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/70 backdrop-blur-sm px-3 pb-4 sm:pb-0">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm px-3">
               <motion.div initial={{ y: 80 }} animate={{ y: 0 }} className="glass-card-strong p-5 max-w-sm w-full text-center">
                 <p className="text-white font-medium text-sm mb-4">Are you sure you want to logout?</p>
                 <div className="flex gap-3">

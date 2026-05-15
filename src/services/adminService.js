@@ -121,7 +121,8 @@ export const getActiveBets = async (gameId) => {
   const q = query(
     collection(db, 'activeBets'),
     where('gameId', '==', gameId),
-    where('status', '==', 'waiting')
+    where('status', '==', 'waiting'),
+    orderBy('createdAt', 'desc')
   );
   const snap = await getDocs(q);
   const bets = snap.docs.map(d => ({ id: d.id, ...d.data() }));
@@ -147,15 +148,15 @@ export const createGame = async (gameData) => {
   return id;
 };
 
-export const declareResult = async (gameId, winningNumbers) => {
-  // winningNumbers is an array of 2 numbers, e.g. [5, 7]
-  
+export const declareResult = async (gameId, winningNumber) => {
+  // Update game if it exists in the games collection (custom games)
   try {
     await updateDoc(doc(db, 'games', gameId), {
-      winningNumbers,
+      winningNumber,
       status: 'completed',
     });
   } catch (e) {
+    // If it's a default game (not in DB), ignore the error
     console.log("Not a custom db game, proceeding with bets resolution.");
   }
 
@@ -173,16 +174,8 @@ export const declareResult = async (gameId, winningNumbers) => {
 
   snap.docs.forEach(betDoc => {
     const bet = betDoc.data();
-    
-    // NEW LOGIC: Both user numbers must match both winning numbers
-    // Assuming bet.numbers always has 2 numbers
-    const userNumbers = bet.numbers || [];
-    
-    // Check if both user numbers are present in the winningNumbers array
-    // We sort both to ensure order doesn't matter (e.g. 5,7 matches 7,5)
-    const isWin = userNumbers.length === winningNumbers.length && 
-                  userNumbers.every((val, index) => val === winningNumbers[index]);
-
+    // Check if winningNumber is among the chosen numbers
+    const isWin = bet.numbers && bet.numbers.includes(winningNumber);
     // Calculate prize based on entry fee tiers
     let prize = 0;
     if (isWin) {
@@ -196,7 +189,7 @@ export const declareResult = async (gameId, winningNumbers) => {
     batch.update(betDoc.ref, {
       status: isWin ? 'won' : 'lost',
       prize,
-      winningNumbers // Store both winning numbers in the bet record
+      winningNumber
     });
 
     if (isWin) {
@@ -261,7 +254,7 @@ export const getAppSettings = async () => {
     qrUrl: 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=doublepatti@upi&pn=DoublePatti&cu=INR',
     dailyBonus: 5,
     minWithdrawal: 100,
-    minDeposit: 100
+    minDeposit: 50
   };
 };
 

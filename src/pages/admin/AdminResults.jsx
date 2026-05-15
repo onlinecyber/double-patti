@@ -6,8 +6,7 @@ import toast from 'react-hot-toast';
 
 const AdminResults = () => {
   const [gameId, setGameId] = useState('');
-  const [num1, setNum1] = useState('');
-  const [num2, setNum2] = useState('');
+  const [winningNumber, setWinningNumber] = useState('');
   const [loading, setLoading] = useState(false);
   const [bets, setBets] = useState([]);
   const [fetchingBets, setFetchingBets] = useState(false);
@@ -34,16 +33,15 @@ const AdminResults = () => {
 
   const handleDeclare = async (e) => {
     e.preventDefault();
-    if (!gameId || num1 === '' || num2 === '') return;
-    if (!confirm(`Declare ${num1} and ${num2} as winners?`)) return;
+    if (!gameId || winningNumber === '') return;
+    if (!confirm(`Are you sure you want to declare ${winningNumber} as the winner for this game?`)) return;
     
     setLoading(true);
     try {
-      await declareResult(gameId, [Number(num1), Number(num2)]);
+      await declareResult(gameId, Number(winningNumber));
       toast.success('Result declared and winners paid!');
       setGameId('');
-      setNum1('');
-      setNum2('');
+      setWinningNumber('');
       setBets([]);
     } catch { toast.error('Failed to declare result'); }
     setLoading(false);
@@ -51,7 +49,7 @@ const AdminResults = () => {
 
   return (
     <div className="space-y-6">
-      <h1 className="font-outfit font-bold text-xl text-white">Declare Result (2 Numbers)</h1>
+      <h1 className="font-outfit font-bold text-xl text-white">Declare Result & View Bets</h1>
       
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Form Section */}
@@ -66,18 +64,10 @@ const AdminResults = () => {
                 ))}
               </select>
             </div>
-            
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="text-xs text-gray-400 mb-1 block">Number 1</label>
-                <input type="number" min="0" max="9" value={num1} onChange={e => setNum1(e.target.value)} placeholder="0-9" className="input-dark" required />
-              </div>
-              <div>
-                <label className="text-xs text-gray-400 mb-1 block">Number 2</label>
-                <input type="number" min="0" max="9" value={num2} onChange={e => setNum2(e.target.value)} placeholder="0-9" className="input-dark" required />
-              </div>
+            <div>
+              <label className="text-xs text-gray-400 mb-1 block">Winning Number (0-9)</label>
+              <input type="number" min="0" max="9" value={winningNumber} onChange={e => setWinningNumber(e.target.value)} placeholder="Enter winning number" className="input-dark" required />
             </div>
-
             <button type="submit" disabled={loading || !gameId} className="btn-neon-red w-full py-3 text-sm disabled:opacity-50">
               {loading ? 'Declaring...' : 'Declare Result & Pay Winners'}
             </button>

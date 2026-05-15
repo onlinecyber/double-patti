@@ -49,8 +49,8 @@ const DepositPage = () => {
   };
 
   const handleRechargeClick = () => {
-    if (!amount || Number(amount) < 100) {
-      toast.error('Minimum recharge is ₹100');
+    if (!amount || Number(amount) < 50) {
+      toast.error('Minimum recharge is ₹50');
       return;
     }
     setView('payment');

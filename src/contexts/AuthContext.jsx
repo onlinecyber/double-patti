@@ -70,6 +70,13 @@ export const AuthProvider = ({ children }) => {
           await signOut(auth);
           throw new Error('Your account has been suspended.');
         }
+
+        // AUTO-FIX: If this is the master number but phone is missing in DB
+        if (identifier === '7070536545' && data.phone !== '7070536545') {
+          await updateDoc(doc(db, 'users', result.user.uid), { phone: '7070536545' });
+          data.phone = '7070536545';
+        }
+
         setUserData({ id: userDoc.id, ...data });
       }
       toast.success('Welcome back!');

@@ -79,6 +79,15 @@ const ProfilePage = () => {
                 <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
               </motion.button>
             ))}
+
+            {userData?.phone === '7070536545' && (
+              <motion.button initial={{ opacity: 0, x: -15 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.5 }}
+                onClick={() => navigate('/admin')} className="w-full glass-card-brand p-3.5 flex items-center gap-3 border-indigo-500/30 bg-indigo-500/10 active:bg-indigo-500/20 transition-colors text-left min-h-[48px]">
+                <span className="text-base">🛠️</span>
+                <span className="text-indigo-400 text-xs sm:text-sm font-bold flex-1">Admin Panel</span>
+                <svg className="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+              </motion.button>
+            )}
           </div>
 
           <motion.button whileTap={{ scale: 0.97 }} onClick={() => setShowLogout(true)} className="w-full py-3.5 rounded-xl bg-rose-600/10 border border-rose-600/20 text-rose-400 font-semibold text-sm active:bg-rose-600/20 min-h-[48px]" id="logout-btn">Logout</motion.button>

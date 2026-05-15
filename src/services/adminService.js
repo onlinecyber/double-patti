@@ -121,8 +121,7 @@ export const getActiveBets = async (gameId) => {
   const q = query(
     collection(db, 'activeBets'),
     where('gameId', '==', gameId),
-    where('status', '==', 'waiting'),
-    orderBy('createdAt', 'desc')
+    where('status', '==', 'waiting')
   );
   const snap = await getDocs(q);
   const bets = snap.docs.map(d => ({ id: d.id, ...d.data() }));

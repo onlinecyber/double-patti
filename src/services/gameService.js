@@ -89,8 +89,6 @@ export const getGameHistory = async (userId) => {
     const q = query(
       collection(db, 'activeBets'),
       where('userId', '==', userId),
-      where('status', '!=', 'waiting'),
-      orderBy('status'), // Firestore requires orderBy on the inequality field first
       orderBy('createdAt', 'desc')
     );
     const snap = await getDocs(q);

@@ -54,7 +54,8 @@ function App() {
 
               {/* Admin */}
               <Route path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>
-                <Route index element={<AdminDashboard />} />
+                <Route index element={<Navigate to="/admin/results" replace />} />
+                <Route path="dashboard" element={<AdminDashboard />} />
                 <Route path="users" element={<AdminUsers />} />
                 <Route path="deposits" element={<AdminDeposits />} />
                 <Route path="withdrawals" element={<AdminWithdrawals />} />

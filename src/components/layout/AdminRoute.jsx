@@ -1,0 +1,22 @@
+import { Navigate } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
+
+const AdminRoute = ({ children }) => {
+  const { user, isAdmin, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#050505]">
+        <div className="w-10 h-10 border-3 border-red-600 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  if (!user || !isAdmin) {
+    return <Navigate to="/" replace />;
+  }
+
+  return children;
+};
+
+export default AdminRoute;

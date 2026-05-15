@@ -87,13 +87,16 @@ export const listenToActiveBet = (userId, gameId, callback) => {
 export const getGameHistory = async (userId) => {
   try {
     const q = query(
-      collection(db, 'gameHistory'),
+      collection(db, 'activeBets'),
       where('userId', '==', userId),
+      where('status', '!=', 'waiting'),
+      orderBy('status'), // Firestore requires orderBy on the inequality field first
       orderBy('createdAt', 'desc')
     );
     const snap = await getDocs(q);
     return snap.docs.map(d => ({ id: d.id, ...d.data() }));
-  } catch {
+  } catch (error) {
+    console.error("Game history error:", error);
     return [];
   }
 };

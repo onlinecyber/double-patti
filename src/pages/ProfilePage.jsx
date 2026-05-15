@@ -68,8 +68,7 @@ const ProfilePage = () => {
 
           <div className="space-y-1.5 mb-4">
             {[
-              { label: 'Deposit History', path: '/deposit', icon: '📥' },
-              { label: 'Withdrawal History', path: '/withdraw', icon: '📤' },
+              { label: 'Transaction History', path: '/history', icon: '📜' },
               { label: 'Leaderboard', path: '/leaderboard', icon: '🏅' },
             ].map((item, idx) => (
               <motion.button key={item.label} initial={{ opacity: 0, x: -15 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 + idx * 0.05 }}

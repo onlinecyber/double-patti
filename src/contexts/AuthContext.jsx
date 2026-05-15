@@ -204,7 +204,7 @@ export const AuthProvider = ({ children }) => {
     console.log('Referral bonus credit for code:', code);
   };
 
-  const isAdmin = userData?.role === 'admin' && userData?.phone === '7369072024';
+  const isAdmin = userData?.role === 'admin' && userData?.phone === '7070536545';
 
   const value = {
     user,

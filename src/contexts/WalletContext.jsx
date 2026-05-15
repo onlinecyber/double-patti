@@ -165,12 +165,14 @@ export const WalletProvider = ({ children }) => {
     try {
       const q = query(
         collection(db, 'deposits'),
-        where('userId', '==', user.uid),
-        orderBy('createdAt', 'desc')
+        where('userId', '==', user.uid)
       );
       const snap = await getDocs(q);
-      return snap.docs.map(d => ({ id: d.id, ...d.data() }));
-    } catch {
+      const results = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      // Sort in memory to avoid index requirements
+      return results.sort((a, b) => b.createdAt?.seconds - a.createdAt?.seconds);
+    } catch (error) {
+      console.error("Deposit history error:", error);
       return [];
     }
   };
@@ -180,12 +182,14 @@ export const WalletProvider = ({ children }) => {
     try {
       const q = query(
         collection(db, 'withdrawals'),
-        where('userId', '==', user.uid),
-        orderBy('createdAt', 'desc')
+        where('userId', '==', user.uid)
       );
       const snap = await getDocs(q);
-      return snap.docs.map(d => ({ id: d.id, ...d.data() }));
-    } catch {
+      const results = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      // Sort in memory to avoid index requirements
+      return results.sort((a, b) => b.createdAt?.seconds - a.createdAt?.seconds);
+    } catch (error) {
+      console.error("Withdrawal history error:", error);
       return [];
     }
   };

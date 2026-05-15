@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 
 const LoginPage = () => {
-  const [email, setEmail] = useState('');
+  const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [remember, setRemember] = useState(false);
   const [showForgot, setShowForgot] = useState(false);
@@ -15,9 +15,9 @@ const LoginPage = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    if (!email || !password) return;
+    if (!identifier || !password) return;
     setLoading(true);
-    try { await login(email, password); navigate('/home', { replace: true }); } catch {}
+    try { await login(identifier, password); navigate('/home', { replace: true }); } catch {}
     setLoading(false);
   };
 
@@ -53,8 +53,8 @@ const LoginPage = () => {
         <div className="glass-card-strong p-5 sm:p-8">
           <form onSubmit={handleLogin} className="space-y-3.5">
             <div>
-              <label className="text-[11px] text-gray-400 font-medium mb-1.5 block">Email Address</label>
-              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" className="input-dark" required id="login-email" autoComplete="email" />
+              <label className="text-[11px] text-gray-400 font-medium mb-1.5 block">Mobile Number / Email</label>
+              <input type="text" value={identifier} onChange={(e) => setIdentifier(e.target.value)} placeholder="Enter mobile or email" className="input-dark" required id="login-identifier" />
             </div>
             <div>
               <label className="text-[11px] text-gray-400 font-medium mb-1.5 block">Password</label>

@@ -9,7 +9,7 @@ import {
   signInWithPopup,
   updateProfile
 } from 'firebase/auth';
-import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, getDoc, setDoc, serverTimestamp, collection, query, where, getDocs, limit } from 'firebase/firestore';
 import { auth, db } from '../lib/firebase';
 import toast from 'react-hot-toast';
 
@@ -47,8 +47,21 @@ export const AuthProvider = ({ children }) => {
     return () => unsubscribe();
   }, []);
 
-  const login = async (email, password) => {
+  const login = async (identifier, password) => {
     try {
+      let email = identifier;
+      
+      // If it's a 10-digit phone number, find the associated email
+      if (/^\d{10}$/.test(identifier)) {
+        const q = query(collection(db, 'users'), where('phone', '==', identifier), limit(1));
+        const querySnapshot = await getDocs(q);
+        
+        if (querySnapshot.empty) {
+          throw new Error('No account found with this mobile number.');
+        }
+        email = querySnapshot.docs[0].data().email;
+      }
+
       const result = await signInWithEmailAndPassword(auth, email, password);
       const userDoc = await getDoc(doc(db, 'users', result.user.uid));
       if (userDoc.exists()) {
@@ -69,6 +82,15 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (email, password, profileData) => {
     try {
+      // Check if phone already exists
+      if (profileData.phone) {
+        const q = query(collection(db, 'users'), where('phone', '==', profileData.phone), limit(1));
+        const querySnapshot = await getDocs(q);
+        if (!querySnapshot.empty) {
+          throw new Error('Mobile number already registered.');
+        }
+      }
+
       const result = await createUserWithEmailAndPassword(auth, email, password);
       await updateProfile(result.user, { displayName: profileData.name });
 

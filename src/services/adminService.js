@@ -261,7 +261,7 @@ export const getAppSettings = async () => {
     qrUrl: 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=doublepatti@upi&pn=DoublePatti&cu=INR',
     dailyBonus: 5,
     minWithdrawal: 100,
-    minDeposit: 50
+    minDeposit: 100
   };
 };
 

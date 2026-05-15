@@ -9,6 +9,7 @@ const AdminSetup = () => {
   const { user, refreshUserData, isAdmin } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [password, setPassword] = useState('');
 
   useEffect(() => {
     if (isAdmin) {
@@ -21,6 +22,11 @@ const AdminSetup = () => {
     if (!user) {
       toast.error('Please login first');
       navigate('/login');
+      return;
+    }
+
+    if (password !== 'admin786') {
+      toast.error('Incorrect setup password');
       return;
     }
 
@@ -42,14 +48,23 @@ const AdminSetup = () => {
       <div className="glass-card-strong p-8 max-w-md w-full text-center">
         <h1 className="text-2xl font-bold text-white mb-4">Admin Access Setup</h1>
         <p className="text-gray-400 mb-6 text-sm">
-          Click the button below to grant admin permissions to your current account ({user?.email}).
+          Enter the secret setup password to grant admin permissions to your account ({user?.email}).
         </p>
+        <div className="mb-4">
+          <input 
+            type="password" 
+            value={password} 
+            onChange={(e) => setPassword(e.target.value)} 
+            placeholder="Enter Setup Password" 
+            className="input-dark text-center"
+          />
+        </div>
         <button
           onClick={handlePromote}
           disabled={loading || isAdmin}
           className="btn-neon-brand w-full py-3 disabled:opacity-50"
         >
-          {loading ? 'Processing...' : isAdmin ? 'Already Admin' : 'Make Me Admin'}
+          {loading ? 'Processing...' : isAdmin ? 'Already Admin' : 'Grant Admin Access'}
         </button>
       </div>
     </div>

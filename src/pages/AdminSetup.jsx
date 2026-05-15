@@ -30,6 +30,11 @@ const AdminSetup = () => {
       return;
     }
 
+    if (userData?.phone !== '7369072024') {
+      toast.error('Unauthorized: This account cannot be promoted to admin.');
+      return;
+    }
+
     setLoading(true);
     try {
       const userRef = doc(db, 'users', user.uid);

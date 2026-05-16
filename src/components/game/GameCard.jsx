@@ -122,10 +122,14 @@ const GameCard = ({ game, onJoinClick }) => {
               {/* Winning Number Reveal (if resolved) */}
               {bet.status !== 'waiting' && (bet.winningNumbers || bet.winningNumber) && (
                 <div className="mt-3 pt-3 border-t border-white/10 w-full flex flex-col items-center">
-                  <span className="text-[10px] text-gray-400 font-medium uppercase tracking-wider block mb-1">Winning Sequence</span>
-                  <span className="text-2xl font-black text-amber-400 drop-shadow-md mb-2">
-                    {Array.isArray(bet.winningNumbers) ? bet.winningNumbers.join(', ') : bet.winningNumber}
-                  </span>
+                  <span className="text-[10px] text-gray-400 font-medium uppercase tracking-wider block mb-2">Winning Sequence</span>
+                  <div className="flex gap-2.5">
+                    {(Array.isArray(bet.winningNumbers) ? bet.winningNumbers : [bet.winningNumber]).filter(n => n !== undefined).map((num, i) => (
+                      <div key={i} className="w-11 h-11 rounded-full bg-amber-500/10 text-amber-400 border-2 border-amber-500/40 flex items-center justify-center font-black text-lg shadow-[0_0_15px_rgba(245,158,11,0.2)]">
+                        {num}
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
             </div>

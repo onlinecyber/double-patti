@@ -32,11 +32,43 @@ const AdminResults = () => {
     setFetchingBets(false);
   };
 
+  const getSafeSequences = () => {
+    if (!gameId || bets.length === 0) return [];
+    
+    const allPossible = [];
+    for (let i = 0; i <= 9; i++) {
+      for (let j = 0; j <= 9; j++) {
+        allPossible.push([i, j]);
+      }
+    }
+
+    // Filter out sequences that have been chosen by users
+    const safe = allPossible.filter(seq => {
+      return !bets.some(bet => bet.numbers[0] === seq[0] && bet.numbers[1] === seq[1]);
+    });
+
+    // Shuffle and pick 10
+    return safe.sort(() => 0.5 - Math.random()).slice(0, 10);
+  };
+
+  const pickSafe = (seq) => {
+    setNum1(seq[0].toString());
+    setNum2(seq[1].toString());
+    toast.success(`Selected safe sequence: ${seq[0]}, ${seq[1]}`);
+  };
+
   const handleDeclare = async (e) => {
     e.preventDefault();
     if (!gameId || num1 === '' || num2 === '') return;
     const result = [Number(num1), Number(num2)];
-    if (!confirm(`Declare ${result.join(', ')} as the winning sequence? This will pay out winners immediately.`)) return;
+    
+    // Check if this result has winners
+    const winnersCount = bets.filter(bet => bet.numbers[0] === result[0] && bet.numbers[1] === result[1]).length;
+    const message = winnersCount > 0 
+      ? `WARNING: This result has ${winnersCount} winners! Do you want to proceed?`
+      : `Safe Result! No winners for ${result.join(', ')}. Proceed?`;
+
+    if (!confirm(message)) return;
     
     setLoading(true);
     try {
@@ -81,6 +113,28 @@ const AdminResults = () => {
               {loading ? 'Declaring...' : 'Declare Winning Sequence'}
             </button>
           </form>
+
+          {/* Safe Suggestions UI */}
+          {gameId && bets.length > 0 && (
+            <div className="mt-6 pt-6 border-t border-white/5">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Safe Recommendations (0 Liability)</h3>
+                <span className="text-[10px] bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded-full font-bold">{getSafeSequences().length} Found</span>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {getSafeSequences().map((seq, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => pickSafe(seq)}
+                    className="px-3 py-2 rounded-lg bg-emerald-500/5 hover:bg-emerald-500/20 border border-emerald-500/20 text-emerald-400 text-xs font-bold transition-all"
+                  >
+                    {seq[0]}-{seq[1]}
+                  </button>
+                ))}
+              </div>
+              <p className="text-[9px] text-gray-600 mt-3 italic">* These numbers have 0 bets. Choosing them ensures 100% profit.</p>
+            </div>
+          )}
         </motion.div>
 
         {/* Bets List Section */}

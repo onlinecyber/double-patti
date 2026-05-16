@@ -6,7 +6,7 @@ import { formatCurrency, formatTime } from '../utils/helpers';
 import toast from 'react-hot-toast';
 
 const quickAmounts = [
-  { amount: 200, label: 'STARTER' },
+  { amount: 100, label: 'STARTER' },
   { amount: 500, label: 'POPULAR' },
   { amount: 1000, label: 'BEST VALUE', hot: true },
   { amount: 2000, label: 'PREMIUM' },

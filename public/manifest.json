@@ -1,0 +1,18 @@
+{
+  "short_name": "Double Patti",
+  "name": "Double Patti Premium Gaming",
+  "description": "India's #1 Premium Gaming Platform",
+  "icons": [
+    {
+      "src": "/logo.png",
+      "type": "image/png",
+      "sizes": "192x192 512x512",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#06061a",
+  "background_color": "#06061a",
+  "orientation": "portrait"
+}

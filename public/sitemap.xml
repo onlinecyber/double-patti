@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://double-patti.vercel.app/</loc>
+    <loc>https://www.doublepatti.in/</loc>
     <lastmod>2026-05-15</lastmod>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://double-patti.vercel.app/login</loc>
+    <loc>https://www.doublepatti.in/login</loc>
     <lastmod>2026-05-15</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://double-patti.vercel.app/register</loc>
+    <loc>https://www.doublepatti.in/register</loc>
     <lastmod>2026-05-15</lastmod>
     <priority>0.8</priority>
   </url>

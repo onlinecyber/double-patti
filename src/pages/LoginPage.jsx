@@ -10,8 +10,14 @@ const LoginPage = () => {
   const [showForgot, setShowForgot] = useState(false);
   const [forgotEmail, setForgotEmail] = useState('');
   const [loading, setLoading] = useState(false);
-  const { login, resetPassword } = useAuth();
+  const { user, loading: authLoading, login, resetPassword } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!authLoading && user) {
+      navigate('/home', { replace: true });
+    }
+  }, [user, authLoading, navigate]);
 
   const handleLogin = async (e) => {
     e.preventDefault();

@@ -102,14 +102,14 @@ const HistoryPage = () => {
                   className="bg-[#121212] p-5 rounded-[24px] border border-white/5 relative overflow-hidden"
                 >
                   <div className="flex items-center justify-between relative z-10">
-                    <div className="space-y-1.5">
-                      <div className="flex items-center gap-2">
-                        <span className="text-lg font-black tracking-tight">
-                          ₹{item.amount || item.entryFee}
+                    <div className="space-y-1.5 flex-1">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="text-lg font-black tracking-tight text-white">
+                          {activeTab === 'games' ? `Bet: ₹${item.entryFee}` : `₹${item.amount}`}
                         </span>
-                        {activeTab === 'games' && item.prize > 0 && (
-                          <span className="text-[10px] bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-full font-bold">
-                            + ₹{item.prize} WIN
+                        {activeTab === 'games' && item.status === 'won' && (
+                          <span className="text-xs bg-emerald-500 text-white px-2.5 py-0.5 rounded-lg font-black shadow-[0_0_10px_rgba(16,185,129,0.3)]">
+                            WIN: ₹{item.prize}
                           </span>
                         )}
                       </div>

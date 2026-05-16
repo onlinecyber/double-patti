@@ -22,13 +22,14 @@ const HomePage = () => {
   const [showInstallBanner, setShowInstallBanner] = useState(false);
 
   useEffect(() => {
-    window.addEventListener('beforeinstallprompt', (e) => {
+    const handleBeforeInstallPrompt = (e) => {
       e.preventDefault();
       setDeferredPrompt(e);
       setShowInstallBanner(true);
-    });
+    };
 
-    return () => window.removeEventListener('beforeinstallprompt', null);
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    return () => window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
   }, []);
 
   const handleInstallClick = async () => {

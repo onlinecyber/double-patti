@@ -29,38 +29,28 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Explicitly set persistence to LOCAL
-    const initAuth = async () => {
-      try {
-        await setPersistence(auth, browserLocalPersistence);
-      } catch (e) {
-        console.error("Persistence error:", e);
-      }
+    // Set persistence once and then listen for auth changes
+    setPersistence(auth, browserLocalPersistence).catch(err => console.error(err));
 
-      const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-        if (firebaseUser) {
-          setUser(firebaseUser);
-          try {
-            const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
-            if (userDoc.exists()) {
-              setUserData({ id: userDoc.id, ...userDoc.data() });
-            }
-          } catch (err) {
-            console.error('Error fetching user data:', err);
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (firebaseUser) {
+        setUser(firebaseUser);
+        try {
+          const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
+          if (userDoc.exists()) {
+            setUserData({ id: userDoc.id, ...userDoc.data() });
           }
-        } else {
-          setUser(null);
-          setUserData(null);
+        } catch (err) {
+          console.error('Error fetching user data:', err);
         }
-        setLoading(false);
-      });
-      return unsubscribe;
-    };
+      } else {
+        setUser(null);
+        setUserData(null);
+      }
+      setLoading(false);
+    });
 
-    const unsubPromise = initAuth();
-    return () => {
-      unsubPromise.then(unsub => unsub && unsub());
-    };
+    return () => unsubscribe();
   }, []);
 
   const login = async (identifier, password) => {

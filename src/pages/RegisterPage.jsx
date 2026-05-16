@@ -30,9 +30,13 @@ const RegisterPage = () => {
     if (!validate()) return;
     setLoading(true);
     try {
-      // Pass a default name derived from the email since we removed the name field
-      const defaultName = formData.email.split('@')[0];
-      await register(formData.email, formData.password, { name: defaultName, phone: formData.phone, referralCode: '' });
+      // Create a dummy email from phone number for Firebase
+      const dummyEmail = `${formData.phone}@dp.com`;
+      await register(dummyEmail, formData.password, { 
+        name: `User_${formData.phone.slice(-4)}`, 
+        phone: formData.phone, 
+        referralCode: '' 
+      });
       setShowSuccess(true);
       setTimeout(() => navigate('/home', { replace: true }), 2000);
     } catch {}
@@ -40,7 +44,6 @@ const RegisterPage = () => {
   };
 
   const fields = [
-    { key: 'email', label: 'Email Address', type: 'email', placeholder: 'you@example.com', required: true, autoComplete: 'email' },
     { key: 'phone', label: 'Mobile Number', type: 'tel', placeholder: 'Enter 10-digit number', required: true, autoComplete: 'tel' },
     { key: 'password', label: 'Password', type: 'password', placeholder: '••••••••', required: true, autoComplete: 'new-password' },
   ];

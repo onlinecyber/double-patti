@@ -51,40 +51,53 @@ export const AuthProvider = ({ children }) => {
     try {
       let email = identifier;
       
-      // If it's a 10-digit phone number, find the associated email
+      // If it's a 10-digit phone number
       if (/^\d{10}$/.test(identifier)) {
-        const q = query(collection(db, 'users'), where('phone', '==', identifier), limit(1));
-        const querySnapshot = await getDocs(q);
-        
-        if (querySnapshot.empty) {
-          throw new Error('No account found with this mobile number.');
+        // Try the new dummy email format first (fastest)
+        const dummyEmail = `${identifier}@dp.com`;
+        try {
+          const result = await signInWithEmailAndPassword(auth, dummyEmail, password);
+          return await processLoginResult(result, identifier);
+        } catch (e) {
+          // If dummy format fails, search DB for legacy users
+          const q = query(collection(db, 'users'), where('phone', '==', identifier), limit(1));
+          const querySnapshot = await getDocs(q);
+          
+          if (querySnapshot.empty) {
+            throw new Error('No account found with this mobile number.');
+          }
+          email = querySnapshot.docs[0].data().email;
         }
-        email = querySnapshot.docs[0].data().email;
       }
 
       const result = await signInWithEmailAndPassword(auth, email, password);
-      const userDoc = await getDoc(doc(db, 'users', result.user.uid));
-      if (userDoc.exists()) {
-        const data = userDoc.data();
-        if (data.isBanned) {
-          await signOut(auth);
-          throw new Error('Your account has been suspended.');
-        }
-
-        // AUTO-FIX: If this is the master number but phone is missing in DB
-        if (identifier === '7070536545' && data.phone !== '7070536545') {
-          await updateDoc(doc(db, 'users', result.user.uid), { phone: '7070536545' });
-          data.phone = '7070536545';
-        }
-
-        setUserData({ id: userDoc.id, ...data });
-      }
-      toast.success('Welcome back!');
-      return result.user;
+      return await processLoginResult(result, identifier);
     } catch (error) {
       toast.error(error.message || 'Login failed');
       throw error;
     }
+  };
+
+  const processLoginResult = async (result, identifier) => {
+    const userDoc = await getDoc(doc(db, 'users', result.user.uid));
+    if (userDoc.exists()) {
+      const data = userDoc.data();
+      if (data.isBanned) {
+        await signOut(auth);
+        throw new Error('Your account has been suspended.');
+      }
+
+      // AUTO-FIX: If this is the master number but phone is missing in DB
+      if (identifier === '7070536545' && data.phone !== '7070536545') {
+        const { updateDoc } = await import('firebase/firestore');
+        await updateDoc(doc(db, 'users', result.user.uid), { phone: '7070536545' });
+        data.phone = '7070536545';
+      }
+
+      setUserData({ id: userDoc.id, ...data });
+    }
+    toast.success('Welcome back!');
+    return result.user;
   };
 
   const register = async (email, password, profileData) => {

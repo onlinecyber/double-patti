@@ -53,8 +53,8 @@ const LoginPage = () => {
         <div className="glass-card-strong p-5 sm:p-8">
           <form onSubmit={handleLogin} className="space-y-3.5">
             <div>
-              <label className="text-[11px] text-gray-400 font-medium mb-1.5 block">Mobile Number / Email</label>
-              <input type="text" value={identifier} onChange={(e) => setIdentifier(e.target.value)} placeholder="Enter mobile or email" className="input-dark" required id="login-identifier" />
+              <label className="text-[11px] text-gray-400 font-medium mb-1.5 block">Mobile Number</label>
+              <input type="text" value={identifier} onChange={(e) => setIdentifier(e.target.value)} placeholder="Enter 10-digit number" className="input-dark" required id="login-identifier" />
             </div>
             <div>
               <label className="text-[11px] text-gray-400 font-medium mb-1.5 block">Password</label>

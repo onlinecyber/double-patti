@@ -119,7 +119,7 @@ export const AuthProvider = ({ children }) => {
         email: email,
         phone: profileData.phone || '',
         role: 'user',
-        walletBalance: 10,
+        walletBalance: 5,
         totalWins: 0,
         totalLosses: 0,
         referralCode: generateReferralCode(),
@@ -127,7 +127,6 @@ export const AuthProvider = ({ children }) => {
         referralEarnings: 0,
         photoURL: '',
         isBanned: false,
-        lastBonusClaim: null,
         createdAt: serverTimestamp(),
       };
 

@@ -11,9 +11,8 @@ import NumberSelectionModal from '../components/game/NumberSelectionModal';
 
 const HomePage = () => {
   const { userData } = useAuth();
-  const { balance, addBalance } = useWallet();
+  const { balance } = useWallet();
   const navigate = useNavigate();
-  const [showBonus, setShowBonus] = useState(false);
   const [winners, setWinners] = useState(() => generateFakeWinners(15));
   const [currentWinnerIdx, setCurrentWinnerIdx] = useState(0);
   const [selectedGameForModal, setSelectedGameForModal] = useState(null);
@@ -63,24 +62,13 @@ const HomePage = () => {
   };
 
   useEffect(() => {
-    const last = localStorage.getItem('lastBonusClaim');
-    const now = Date.now();
-    if (!last || now - Number(last) > 24 * 60 * 60 * 1000) {
-      setTimeout(() => setShowBonus(true), 1500);
-    }
-  }, []);
-
-  useEffect(() => {
     const interval = setInterval(() => {
-      // Rotate the index
       setCurrentWinnerIdx(prev => (prev + 1) % winners.length);
       
-      // Every few seconds, update a random winner in the list to keep it fresh
       if (Math.random() > 0.6) {
         setWinners(prev => {
           const newWinners = [...prev];
           const randIdx = Math.floor(Math.random() * newWinners.length);
-          // Importing helpers inside to avoid circular deps or scope issues if any
           const names = ['Rahul K.', 'Priya S.', 'Amit J.', 'Sneha R.', 'Vikram P.', 'Deepak H.', 'Ankit L.', 'Swati N.', 'Manish J.', 'Kunal B.', 'Abhishek K.', 'Roshni S.', 'Yash P.', 'Varun G.', 'Sakshi R.', 'Aditya B.', 'Gaurav H.', 'Sameer W.', 'Preeti J.', 'Aryan N.'];
           const amounts = [50000, 150000, 500000, 20000, 80000];
           
@@ -96,23 +84,6 @@ const HomePage = () => {
     }, 4000);
     return () => clearInterval(interval);
   }, [winners.length]);
-
-  const claimBonus = async () => {
-    try {
-      const { getAppSettings } = await import('../services/adminService');
-      const settings = await getAppSettings();
-      const bonusAmount = settings?.dailyBonus || 5;
-      
-      const success = await addBalance(bonusAmount, 'Daily Login Bonus');
-      if (success) {
-        localStorage.setItem('lastBonusClaim', Date.now().toString());
-        setShowBonus(false);
-        toast.success(`₹${bonusAmount} added to your wallet!`);
-      }
-    } catch (error) {
-      toast.error('Failed to claim bonus');
-    }
-  };
 
   const currentWinner = winners[currentWinnerIdx];
 
@@ -335,43 +306,6 @@ const HomePage = () => {
           </motion.div>
         </div>
       </div>
-
-      {/* ===== DAILY BONUS POPUP ===== */}
-      <AnimatePresence>
-        {showBonus && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md px-5"
-            onClick={claimBonus}
-          >
-            <motion.div
-              initial={{ scale: 0.9, y: 20, opacity: 0 }}
-              animate={{ scale: 1, y: 0, opacity: 1 }}
-              exit={{ scale: 0.9, y: 20, opacity: 0 }}
-              transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-              className="bg-slate-900/90 p-8 sm:p-10 text-center max-w-sm w-full relative overflow-hidden rounded-[32px] border border-indigo-500/40 shadow-[0_20px_60px_rgba(79,70,229,0.3)]"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="absolute -right-10 -top-10 w-48 h-48 rounded-full bg-indigo-600/30 blur-[60px]" />
-              <div className="absolute -left-10 -bottom-10 w-48 h-48 rounded-full bg-amber-500/30 blur-[60px]" />
-              
-              <motion.div animate={{ rotate: [0, 10, -10, 0], y: [0, -5, 0] }} transition={{ duration: 1.5, repeat: Infinity }} className="text-6xl sm:text-7xl mb-5">🎁</motion.div>
-              <h3 className="font-outfit font-black text-2xl sm:text-3xl text-white mb-2">Daily Bonus!</h3>
-              <p className="text-gray-400 text-base mb-6 font-medium">Claim your daily login reward</p>
-              
-              <div className="bg-gradient-to-br from-amber-500/10 to-orange-500/10 border border-amber-500/30 p-5 rounded-2xl mb-8 shadow-inner">
-                <span className="gradient-text-gold font-outfit font-black text-4xl">₹5 FREE</span>
-              </div>
-              
-              <motion.button whileTap={{ scale: 0.95 }} onClick={claimBonus} className="w-full py-4 rounded-2xl bg-gradient-to-r from-emerald-500 to-green-500 text-white font-black text-lg shadow-[0_0_20px_rgba(16,185,129,0.4)] hover:shadow-[0_0_30px_rgba(16,185,129,0.6)] transition-shadow">
-                Claim Bonus 🎉
-              </motion.button>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       {/* ===== NUMBER SELECTION MODAL ===== */}
       {selectedGameForModal && (

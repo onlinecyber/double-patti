@@ -69,7 +69,7 @@ const HomePage = () => {
         setWinners(prev => {
           const newWinners = [...prev];
           const randIdx = Math.floor(Math.random() * newWinners.length);
-          const names = ['Rahul K.', 'Priya S.', 'Amit J.', 'Sneha R.', 'Vikram P.', 'Deepak H.', 'Ankit L.', 'Swati N.', 'Manish J.', 'Kunal B.', 'Abhishek K.', 'Roshni S.', 'Yash P.', 'Varun G.', 'Sakshi R.', 'Aditya B.', 'Gaurav H.', 'Sameer W.', 'Preeti J.', 'Aryan N.'];
+          const names = ['Rahul K.', 'Priya S.', 'Imtiyaz A.', 'Arman S.', 'Farhan K.', 'Zoya P.', 'Afzal N.', 'Sneha R.', 'Vikram P.', 'Deepak H.', 'Ankit L.', 'Ayesha S.', 'Manish J.', 'Kunal B.', 'Mustafa W.', 'Roshni S.', 'Yash P.', 'Varun G.', 'Sakshi R.', 'Aditya B.', 'Salim D.', 'Sana V.'];
           const amounts = [50000, 150000, 500000, 20000, 80000];
           
           newWinners[randIdx] = {

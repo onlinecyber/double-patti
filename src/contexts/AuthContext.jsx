@@ -7,7 +7,9 @@ import {
   sendPasswordResetEmail,
   GoogleAuthProvider,
   signInWithPopup,
-  updateProfile
+  updateProfile,
+  setPersistence,
+  browserLocalPersistence
 } from 'firebase/auth';
 import { doc, getDoc, setDoc, serverTimestamp, collection, query, where, getDocs, limit } from 'firebase/firestore';
 import { auth, db } from '../lib/firebase';
@@ -27,24 +29,38 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      if (firebaseUser) {
-        setUser(firebaseUser);
-        try {
-          const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
-          if (userDoc.exists()) {
-            setUserData({ id: userDoc.id, ...userDoc.data() });
-          }
-        } catch (err) {
-          console.error('Error fetching user data:', err);
-        }
-      } else {
-        setUser(null);
-        setUserData(null);
+    // Explicitly set persistence to LOCAL
+    const initAuth = async () => {
+      try {
+        await setPersistence(auth, browserLocalPersistence);
+      } catch (e) {
+        console.error("Persistence error:", e);
       }
-      setLoading(false);
-    });
-    return () => unsubscribe();
+
+      const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+        if (firebaseUser) {
+          setUser(firebaseUser);
+          try {
+            const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
+            if (userDoc.exists()) {
+              setUserData({ id: userDoc.id, ...userDoc.data() });
+            }
+          } catch (err) {
+            console.error('Error fetching user data:', err);
+          }
+        } else {
+          setUser(null);
+          setUserData(null);
+        }
+        setLoading(false);
+      });
+      return unsubscribe;
+    };
+
+    const unsubPromise = initAuth();
+    return () => {
+      unsubPromise.then(unsub => unsub && unsub());
+    };
   }, []);
 
   const login = async (identifier, password) => {

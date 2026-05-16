@@ -231,9 +231,24 @@ export const getAnalytics = async () => {
 
   let totalDeposits = 0;
   let totalWithdrawals = 0;
+  let todayDeposits = 0;
+  
+  const startOfToday = new Date();
+  startOfToday.setHours(0, 0, 0, 0);
+
   deposits.docs.forEach(d => {
-    if (d.data().status === 'approved') totalDeposits += d.data().amount;
+    const data = d.data();
+    if (data.status === 'approved') {
+      totalDeposits += data.amount;
+      
+      // Check if it was created today
+      const createdAt = data.createdAt?.toDate();
+      if (createdAt && createdAt >= startOfToday) {
+        todayDeposits += data.amount;
+      }
+    }
   });
+
   withdrawals.docs.forEach(d => {
     if (d.data().status === 'approved') totalWithdrawals += d.data().amount;
   });
@@ -242,6 +257,7 @@ export const getAnalytics = async () => {
     totalUsers: users.size,
     totalGames: games.size,
     totalDeposits,
+    todayDeposits, // New field
     totalWithdrawals,
     revenue: totalDeposits - totalWithdrawals,
     pendingDeposits: deposits.docs.filter(d => d.data().status === 'pending').length,

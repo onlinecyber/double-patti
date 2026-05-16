@@ -18,6 +18,7 @@ const AdminDashboard = () => {
 
   const cards = stats ? [
     { label: 'Total Users', value: stats.totalUsers, icon: '👥', color: 'from-blue-600/20 to-blue-800/10' },
+    { label: "Today's Deposits", value: formatCurrency(stats.todayDeposits), icon: '📅', color: 'from-emerald-600/20 to-emerald-800/10' },
     { label: 'Total Deposits', value: formatCurrency(stats.totalDeposits), icon: '📥', color: 'from-green-600/20 to-green-800/10' },
     { label: 'Total Withdrawals', value: formatCurrency(stats.totalWithdrawals), icon: '📤', color: 'from-amber-600/20 to-amber-800/10' },
     { label: 'Revenue', value: formatCurrency(stats.revenue), icon: '💰', color: 'from-yellow-600/20 to-yellow-800/10' },

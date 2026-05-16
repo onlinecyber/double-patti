@@ -18,6 +18,29 @@ const HomePage = () => {
   const [currentWinnerIdx, setCurrentWinnerIdx] = useState(0);
   const [selectedGameForModal, setSelectedGameForModal] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
+  const [showInstallBanner, setShowInstallBanner] = useState(false);
+
+  useEffect(() => {
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+      setShowInstallBanner(true);
+    });
+
+    return () => window.removeEventListener('beforeinstallprompt', null);
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') {
+      console.log('User accepted the install prompt');
+    }
+    setDeferredPrompt(null);
+    setShowInstallBanner(false);
+  };
 
   const handleBetSubmit = async (selectedNumbers, betAmount) => {
     if (!userData?.id) {
@@ -96,6 +119,40 @@ const HomePage = () => {
     <div className="min-h-screen bg-[#070814] pb-32 md:pb-12 text-white font-sans">
       <div className="bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-900/20 via-[#070814] to-[#070814] min-h-screen">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 space-y-6">
+
+          {/* ===== INSTALL APP BANNER ===== */}
+          <AnimatePresence>
+            {showInstallBanner && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                className="relative overflow-hidden rounded-2xl bg-indigo-600 p-4 shadow-lg border border-indigo-400/30 flex items-center justify-between gap-4 mb-4"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
+                    <img src="/logo.png" alt="Logo" className="w-6 h-6 object-contain" />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-bold text-white">Install Double Patti</h4>
+                    <p className="text-[10px] text-indigo-100">Get the best experience on your phone</p>
+                  </div>
+                </div>
+                <button 
+                  onClick={handleInstallClick}
+                  className="px-4 py-2 bg-white text-indigo-600 text-xs font-black rounded-lg shadow-md hover:bg-indigo-50 transition-colors shrink-0"
+                >
+                  INSTALL
+                </button>
+                <button 
+                  onClick={() => setShowInstallBanner(false)}
+                  className="absolute top-1 right-2 text-indigo-200 hover:text-white"
+                >
+                  <span className="text-sm">×</span>
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {/* ===== WALLET CARD ===== */}
           <motion.div

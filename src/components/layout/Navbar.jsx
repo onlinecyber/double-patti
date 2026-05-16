@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useWallet } from '../../contexts/WalletContext';
@@ -8,27 +7,8 @@ import { formatCurrency } from '../../utils/helpers';
 const Navbar = () => {
   const { balance } = useWallet();
   const { userData } = useAuth();
-  const [deferredPrompt, setDeferredPrompt] = useState(null);
-
-  useEffect(() => {
-    const handler = (e) => {
-      e.preventDefault();
-      setDeferredPrompt(e);
-    };
-    window.addEventListener('beforeinstallprompt', handler);
-    return () => window.removeEventListener('beforeinstallprompt', handler);
-  }, []);
-
-  const handleInstallClick = async () => {
-    if (!deferredPrompt) return;
-    deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
-    if (outcome === 'accepted') {
-      setDeferredPrompt(null);
-    }
-  };
-
   const location = useLocation();
+
   const hideOn = ['/', '/login', '/register'];
   if (hideOn.includes(location.pathname)) return null;
 
@@ -52,17 +32,6 @@ const Navbar = () => {
 
         {/* Right Side */}
         <div className="flex items-center gap-2 sm:gap-3">
-          {/* Install App Button */}
-          {deferredPrompt && (
-            <button 
-              onClick={handleInstallClick}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white text-[10px] sm:text-xs font-bold shadow-lg shadow-indigo-500/20"
-            >
-              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
-              <span className="hidden xs:inline">Install App</span>
-            </button>
-          )}
-
           {/* Wallet Badge */}
           <Link to="/deposit" className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl"
             style={{ background: 'linear-gradient(135deg, rgba(99,102,241,0.12), rgba(255,255,255,0.02))', border: '1px solid rgba(99,102,241,0.2)' }}>
@@ -76,6 +45,14 @@ const Navbar = () => {
               {balance.toLocaleString('en-IN')}
             </motion.span>
           </Link>
+
+          {/* Notification */}
+          <button className="relative w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-white/5 flex items-center justify-center active:bg-white/10 transition-colors">
+            <svg className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+            </svg>
+            <span className="absolute top-1 right-1 w-2 h-2 bg-amber-500 rounded-full animate-pulse" />
+          </button>
 
           {/* Profile */}
           <Link to="/profile" className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br from-indigo-600/30 to-violet-700/30 border border-indigo-500/20 flex items-center justify-center overflow-hidden shrink-0">

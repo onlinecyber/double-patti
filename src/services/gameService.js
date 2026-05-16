@@ -86,16 +86,21 @@ export const listenToActiveBet = (userId, gameId, callback) => {
   });
 };
 
-// Get game history for a user
 export const getGameHistory = async (userId) => {
   try {
     const q = query(
       collection(db, 'activeBets'),
-      where('userId', '==', userId),
-      orderBy('createdAt', 'desc')
+      where('userId', '==', userId)
     );
     const snap = await getDocs(q);
-    return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    const bets = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    
+    // Sort in memory to avoid composite index requirement
+    return bets.sort((a, b) => {
+      const timeA = a.createdAt?.toMillis ? a.createdAt.toMillis() : (a.createdAt || 0);
+      const timeB = b.createdAt?.toMillis ? b.createdAt.toMillis() : (b.createdAt || 0);
+      return timeB - timeA;
+    });
   } catch (error) {
     console.error("Game history error:", error);
     return [];

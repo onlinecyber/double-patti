@@ -157,12 +157,13 @@ export const createGame = async (gameData) => {
 export const declareResult = async (gameId, winningNumbers) => {
   // winningNumbers is an array [num1, num2]
   try {
-    await updateDoc(doc(db, 'games', gameId), {
+    await setDoc(doc(db, 'games', gameId), {
       winningNumbers,
       status: 'completed',
-    });
+      declaredAt: serverTimestamp()
+    }, { merge: true });
   } catch (e) {
-    console.log("Not a custom db game, proceeding with bets resolution.");
+    console.error("Error setting game result:", e);
   }
 
   const q = query(

@@ -171,3 +171,13 @@ export const defaultGames = [
     closingTime: '11:59 PM',
   },
 ];
+
+export const listenToGameResult = (gameId, callback) => {
+  return onSnapshot(doc(db, 'games', gameId), (docSnap) => {
+    if (docSnap.exists()) {
+      callback(docSnap.data());
+    } else {
+      callback(null);
+    }
+  });
+};

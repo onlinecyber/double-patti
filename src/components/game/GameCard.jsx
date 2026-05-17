@@ -1,12 +1,26 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useAuth } from '../../contexts/AuthContext';
-import { listenToActiveBet } from '../../services/gameService';
+import { listenToActiveBet, listenToGameResult } from '../../services/gameService';
 
 const GameCard = ({ game, onJoinClick }) => {
   const { userData } = useAuth();
   const [bet, setBet] = useState(null);
+  const [lastResult, setLastResult] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Listen to real-time updates for the last declared result of this game
+    const unsubscribeResult = listenToGameResult(game.id, (gameData) => {
+      if (gameData && gameData.winningNumbers) {
+        setLastResult(gameData.winningNumbers);
+      } else {
+        setLastResult(null);
+      }
+    });
+
+    return () => unsubscribeResult && unsubscribeResult();
+  }, [game.id]);
 
   useEffect(() => {
     if (!userData?.id) {
@@ -70,14 +84,30 @@ const GameCard = ({ game, onJoinClick }) => {
               Loading...
             </div>
           ) : !bet ? (
-            <motion.button
-              whileTap={{ scale: 0.95 }}
-              className="group/btn relative overflow-hidden w-full sm:w-[90%] px-6 py-3.5 rounded-xl bg-gradient-to-r from-pink-500 to-indigo-600 text-white font-black shadow-lg hover:shadow-xl transition-all"
-              onClick={onJoinClick}
-            >
-              <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent group-hover/btn:animate-[shimmer_1.5s_infinite]" />
-              <span className="text-base sm:text-lg tracking-widest relative z-10">JOIN NOW</span>
-            </motion.button>
+            <div className="w-full flex flex-col items-center gap-4">
+              {/* Show Last Result if available */}
+              {lastResult && (
+                <div className="w-full p-3 rounded-xl bg-black/35 border border-white/5 flex flex-col items-center">
+                  <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider block mb-2">Last Result</span>
+                  <div className="flex gap-2">
+                    {lastResult.map((num, i) => (
+                      <div key={i} className="w-9 h-9 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/30 flex items-center justify-center font-black text-sm shadow-[0_0_10px_rgba(245,158,11,0.15)]">
+                        {num}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              
+              <motion.button
+                whileTap={{ scale: 0.95 }}
+                className="group/btn relative overflow-hidden w-full sm:w-[90%] px-6 py-3.5 rounded-xl bg-gradient-to-r from-pink-500 to-indigo-600 text-white font-black shadow-lg hover:shadow-xl transition-all"
+                onClick={onJoinClick}
+              >
+                <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent group-hover/btn:animate-[shimmer_1.5s_infinite]" />
+                <span className="text-base sm:text-lg tracking-widest relative z-10">JOIN NOW</span>
+              </motion.button>
+            </div>
           ) : (
             <div className={`w-full sm:w-[95%] p-4 rounded-2xl border flex flex-col items-center text-center transition-all ${
               bet.status === 'waiting' ? 'bg-indigo-900/40 border-indigo-500/50 shadow-[0_0_20px_rgba(99,102,241,0.2)]' :

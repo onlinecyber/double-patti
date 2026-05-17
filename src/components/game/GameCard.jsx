@@ -7,6 +7,7 @@ const GameCard = ({ game, onJoinClick }) => {
   const { userData } = useAuth();
   const [bet, setBet] = useState(null);
   const [lastResult, setLastResult] = useState(null);
+  const [isDeclaredToday, setIsDeclaredToday] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -14,8 +15,24 @@ const GameCard = ({ game, onJoinClick }) => {
     const unsubscribeResult = listenToGameResult(game.id, (gameData) => {
       if (gameData && gameData.winningNumbers) {
         setLastResult(gameData.winningNumbers);
+
+        if (gameData.declaredAt) {
+          const declaredDate = gameData.declaredAt.toDate ? gameData.declaredAt.toDate() : new Date(gameData.declaredAt);
+          const startOfToday = new Date();
+          startOfToday.setHours(0, 0, 0, 0);
+
+          if (declaredDate >= startOfToday) {
+            setIsDeclaredToday(true);
+          } else {
+            setIsDeclaredToday(false);
+          }
+        } else {
+          // If result exists but timestamp is syncing, assume it is today's declaration
+          setIsDeclaredToday(true);
+        }
       } else {
         setLastResult(null);
+        setIsDeclaredToday(false);
       }
     });
 
@@ -88,7 +105,9 @@ const GameCard = ({ game, onJoinClick }) => {
               {/* Show Last Result if available */}
               {lastResult && (
                 <div className="w-full p-3 rounded-xl bg-black/35 border border-white/5 flex flex-col items-center">
-                  <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider block mb-2">Last Result</span>
+                  <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider block mb-2">
+                    {isDeclaredToday ? "Today's Winning Result" : "Last Result"}
+                  </span>
                   <div className="flex gap-2">
                     {lastResult.map((num, i) => (
                       <div key={i} className="w-9 h-9 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/30 flex items-center justify-center font-black text-sm shadow-[0_0_10px_rgba(245,158,11,0.15)]">
@@ -99,14 +118,20 @@ const GameCard = ({ game, onJoinClick }) => {
                 </div>
               )}
               
-              <motion.button
-                whileTap={{ scale: 0.95 }}
-                className="group/btn relative overflow-hidden w-full sm:w-[90%] px-6 py-3.5 rounded-xl bg-gradient-to-r from-pink-500 to-indigo-600 text-white font-black shadow-lg hover:shadow-xl transition-all"
-                onClick={onJoinClick}
-              >
-                <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent group-hover/btn:animate-[shimmer_1.5s_infinite]" />
-                <span className="text-base sm:text-lg tracking-widest relative z-10">JOIN NOW</span>
-              </motion.button>
+              {isDeclaredToday ? (
+                <div className="w-full sm:w-[90%] px-6 py-3 rounded-xl bg-red-600/10 border border-red-500/20 text-red-400 font-black text-center text-xs sm:text-sm tracking-wider shadow-[0_0_15px_rgba(239,68,68,0.05)]">
+                  🔒 CLOSED FOR TODAY
+                </div>
+              ) : (
+                <motion.button
+                  whileTap={{ scale: 0.95 }}
+                  className="group/btn relative overflow-hidden w-full sm:w-[90%] px-6 py-3.5 rounded-xl bg-gradient-to-r from-pink-500 to-indigo-600 text-white font-black shadow-lg hover:shadow-xl transition-all"
+                  onClick={onJoinClick}
+                >
+                  <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent group-hover/btn:animate-[shimmer_1.5s_infinite]" />
+                  <span className="text-base sm:text-lg tracking-widest relative z-10">JOIN NOW</span>
+                </motion.button>
+              )}
             </div>
           ) : (
             <div className={`w-full sm:w-[95%] p-4 rounded-2xl border flex flex-col items-center text-center transition-all ${

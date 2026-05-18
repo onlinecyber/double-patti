@@ -141,6 +141,16 @@ export const defaultGames = [
     closingTime: '01:00 PM',
   },
   {
+    id: 'double-patti-530',
+    title: 'Double Patti',
+    entryFee: 40,
+    prizePool: 100000,
+    icon: '💎',
+    color: 'from-cyan-600 to-cyan-900',
+    openingTime: '05:30 PM',
+    closingTime: '06:00 PM',
+  },
+  {
     id: 'double-patti-50',
     title: 'Double Patti',
     entryFee: 50,

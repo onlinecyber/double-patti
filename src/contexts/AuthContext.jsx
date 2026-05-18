@@ -9,7 +9,10 @@ import {
   signInWithPopup,
   updateProfile,
   setPersistence,
-  browserLocalPersistence
+  browserLocalPersistence,
+  updatePassword,
+  EmailAuthProvider,
+  reauthenticateWithCredential
 } from 'firebase/auth';
 import { doc, getDoc, setDoc, serverTimestamp, collection, query, where, getDocs, limit } from 'firebase/firestore';
 import { auth, db } from '../lib/firebase';
@@ -229,6 +232,19 @@ export const AuthProvider = ({ children }) => {
     console.log('Referral bonus credit for code:', code);
   };
 
+  const changePassword = async (currentPassword, newPassword) => {
+    try {
+      if (!auth.currentUser) throw new Error('No user is currently signed in.');
+      const credential = EmailAuthProvider.credential(auth.currentUser.email, currentPassword);
+      await reauthenticateWithCredential(auth.currentUser, credential);
+      await updatePassword(auth.currentUser, newPassword);
+      toast.success('Password updated successfully!');
+    } catch (error) {
+      toast.error(error.message || 'Failed to change password');
+      throw error;
+    }
+  };
+
   const isAdmin = userData?.phone === '7070536545';
 
   const value = {
@@ -242,6 +258,7 @@ export const AuthProvider = ({ children }) => {
     logout,
     resetPassword,
     refreshUserData,
+    changePassword,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

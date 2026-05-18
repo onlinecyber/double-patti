@@ -8,14 +8,45 @@ import toast from 'react-hot-toast';
 
 const ProfilePage = () => {
   const navigate = useNavigate();
-  const { userData, logout } = useAuth();
+  const { userData, logout, changePassword } = useAuth();
   const { balance } = useWallet();
   const [showLogout, setShowLogout] = useState(false);
+
+  // Change Password States
+  const [showChangePassword, setShowChangePassword] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [passwordLoading, setPasswordLoading] = useState(false);
 
   const handleLogout = async () => { await logout(); navigate('/login', { replace: true }); };
   const handleShare = () => {
     const text = `Join Double Patti! Use code: ${userData?.referralCode || 'DPXXXX'}`;
     if (navigator.share) { navigator.share({ text }); } else { navigator.clipboard.writeText(text); toast.success('Copied!'); }
+  };
+
+  const handleChangePasswordSubmit = async (e) => {
+    e.preventDefault();
+    if (newPassword !== confirmPassword) {
+      toast.error("New passwords do not match!");
+      return;
+    }
+    if (newPassword.length < 6) {
+      toast.error("Password must be at least 6 characters!");
+      return;
+    }
+    setPasswordLoading(true);
+    try {
+      await changePassword(currentPassword, newPassword);
+      setShowChangePassword(false);
+      setCurrentPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setPasswordLoading(false);
+    }
   };
 
   const stats = [
@@ -78,6 +109,13 @@ const ProfilePage = () => {
               </motion.button>
             ))}
 
+            <motion.button initial={{ opacity: 0, x: -15 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.4 }}
+              onClick={() => setShowChangePassword(true)} className="w-full glass-card p-3.5 flex items-center gap-3 active:bg-white/5 transition-colors text-left min-h-[48px]">
+              <span className="text-base">🔐</span>
+              <span className="text-white text-xs sm:text-sm font-medium flex-1">Change Password</span>
+              <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+            </motion.button>
+
             {userData?.phone === '7070536545' && (
               <motion.button initial={{ opacity: 0, x: -15 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.5 }}
                 onClick={() => navigate('/admin')} className="w-full glass-card-brand p-3.5 flex items-center gap-3 border-indigo-500/30 bg-indigo-500/10 active:bg-indigo-500/20 transition-colors text-left min-h-[48px]">
@@ -98,6 +136,34 @@ const ProfilePage = () => {
                   <button onClick={() => setShowLogout(false)} className="btn-outline flex-1 py-3 text-sm">Cancel</button>
                   <button onClick={handleLogout} className="btn-neon-brand flex-1 py-3 text-sm">Logout</button>
                 </div>
+              </motion.div>
+            </motion.div>
+          )}
+
+          {showChangePassword && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm px-3">
+              <motion.div initial={{ y: 80 }} animate={{ y: 0 }} className="glass-card-strong p-5 max-w-sm w-full">
+                <h3 className="font-outfit font-bold text-base text-white mb-4 flex items-center gap-2">🔐 Change Password</h3>
+                <form onSubmit={handleChangePasswordSubmit} className="space-y-4">
+                  <div>
+                    <label className="text-[10px] text-gray-400 font-medium mb-1 block">Current Password</label>
+                    <input type="password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} placeholder="••••••••" className="input-dark" required />
+                  </div>
+                  <div>
+                    <label className="text-[10px] text-gray-400 font-medium mb-1 block">New Password</label>
+                    <input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder="At least 6 chars" className="input-dark" required />
+                  </div>
+                  <div>
+                    <label className="text-[10px] text-gray-400 font-medium mb-1 block">Confirm New Password</label>
+                    <input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} placeholder="••••••••" className="input-dark" required />
+                  </div>
+                  <div className="flex gap-3 pt-2">
+                    <button type="button" onClick={() => { setShowChangePassword(false); setCurrentPassword(''); setNewPassword(''); setConfirmPassword(''); }} className="btn-outline flex-1 py-3 text-xs font-semibold">Cancel</button>
+                    <button type="submit" disabled={passwordLoading} className="btn-neon-brand flex-1 py-3 text-xs font-semibold disabled:opacity-50">
+                      {passwordLoading ? 'Updating...' : 'Save Password'}
+                    </button>
+                  </div>
+                </form>
               </motion.div>
             </motion.div>
           )}

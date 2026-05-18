@@ -80,7 +80,7 @@ const RegisterPage = () => {
               {loading ? <span className="flex items-center justify-center gap-2"><span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />Creating...</span> : 'Create Account'}
             </motion.button>
           </form>
-          <p className="text-center text-xs text-gray-500 mt-3.5">Already have an account? <Link to="/login" className="text-indigo-400 font-semibold active:text-indigo-300">Sign In</Link></p>
+          <p className="text-center text-xs text-gray-500 mt-3.5">Already have an account? <Link to="/login" className="text-indigo-400 font-semibold active:text-indigo-300">Login</Link></p>
         </div>
       </motion.div>
 

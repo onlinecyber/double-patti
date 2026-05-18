@@ -53,7 +53,7 @@ const LoginPage = () => {
             <img src="/logo.png" alt="Logo" className="w-full h-full object-cover" />
           </motion.div>
           <h1 className="font-outfit font-bold text-xl sm:text-2xl text-white">Welcome Back</h1>
-          <p className="text-gray-500 text-xs sm:text-sm mt-1">Sign in to continue playing</p>
+          <p className="text-gray-500 text-xs sm:text-sm mt-1">Login to continue playing</p>
         </div>
 
         <div className="glass-card-strong p-5 sm:p-8">
@@ -74,13 +74,13 @@ const LoginPage = () => {
               <button type="button" onClick={() => setShowForgot(true)} className="text-[11px] text-indigo-400 active:text-indigo-300 min-h-[44px] flex items-center">Forgot Password?</button>
             </div>
             <motion.button whileTap={{ scale: 0.97 }} type="submit" disabled={loading} className="btn-neon-brand w-full py-3.5 text-sm disabled:opacity-50" id="login-submit">
-              {loading ? <span className="flex items-center justify-center gap-2"><span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />Signing In...</span> : 'Sign In'}
+              {loading ? <span className="flex items-center justify-center gap-2"><span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />Logging In...</span> : 'Login'}
             </motion.button>
           </form>
 
 
 
-          <p className="text-center text-xs sm:text-sm text-gray-500 mt-4">Don't have an account? <Link to="/register" className="text-indigo-400 font-semibold active:text-indigo-300">Sign Up</Link></p>
+          <p className="text-center text-xs sm:text-sm text-gray-500 mt-4">Don't have an account? <Link to="/register" className="text-indigo-400 font-semibold active:text-indigo-300">Register</Link></p>
         </div>
       </motion.div>
 

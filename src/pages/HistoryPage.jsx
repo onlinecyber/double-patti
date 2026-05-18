@@ -128,7 +128,7 @@ const HistoryPage = () => {
                         (item.status === 'completed' || item.status === 'approved' || item.status === 'won') ? 'text-green-400 bg-green-400/10' : 
                         (item.status === 'pending' || item.status === 'waiting') ? 'text-amber-400 bg-amber-400/10' : 'text-red-400 bg-red-400/10'
                       }`}>
-                        {item.status}
+                        {item.status === 'approved' ? 'successful' : item.status}
                       </span>
                     </div>
                   </div>

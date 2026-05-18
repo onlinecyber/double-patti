@@ -14,7 +14,7 @@ const AdminDeposits = () => {
 
   const handleApprove = async (d) => {
     await approveDeposit(d.id, d.userId, d.amount);
-    toast.success('Deposit approved');
+    toast.success('Deposit marked successful');
     load();
   };
 
@@ -33,7 +33,9 @@ const AdminDeposits = () => {
       <h1 className="font-outfit font-bold text-xl text-white mb-4">Deposits</h1>
       <div className="flex gap-2 mb-4">
         {['all', 'pending', 'approved', 'rejected'].map(f => (
-          <button key={f} onClick={() => setFilter(f)} className={`px-3 py-1.5 rounded-lg text-xs font-semibold capitalize ${filter === f ? 'bg-indigo-600 text-white' : 'bg-white/5 text-gray-400'}`}>{f}</button>
+          <button key={f} onClick={() => setFilter(f)} className={`px-3 py-1.5 rounded-lg text-xs font-semibold capitalize ${filter === f ? 'bg-indigo-600 text-white' : 'bg-white/5 text-gray-400'}`}>
+            {f === 'approved' ? 'successful' : f}
+          </button>
         ))}
       </div>
       <div className="space-y-2">
@@ -44,7 +46,7 @@ const AdminDeposits = () => {
                 <p className="text-white font-semibold text-sm">{d.userName || d.email}</p>
                 <p className="text-gray-500 text-[10px]">{formatTime(d.createdAt)}</p>
               </div>
-              <span className={`badge-${d.status}`}>{d.status}</span>
+              <span className={`badge-${d.status}`}>{d.status === 'approved' ? 'successful' : d.status}</span>
             </div>
             <div className="flex items-center justify-between">
               <div>
@@ -53,7 +55,7 @@ const AdminDeposits = () => {
               </div>
               {d.status === 'pending' && (
                 <div className="flex gap-2">
-                  <button onClick={() => handleApprove(d)} className="px-3 py-1.5 rounded-lg bg-green-600/20 text-green-400 text-xs font-semibold hover:bg-green-600/30">Approve</button>
+                  <button onClick={() => handleApprove(d)} className="px-3 py-1.5 rounded-lg bg-green-600/20 text-green-400 text-xs font-semibold hover:bg-green-600/30">Successful</button>
                   <button onClick={() => handleReject(d)} className="px-3 py-1.5 rounded-lg bg-rose-600/20 text-rose-400 text-xs font-semibold hover:bg-rose-600/30">Reject</button>
                 </div>
               )}

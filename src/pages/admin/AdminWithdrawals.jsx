@@ -12,7 +12,7 @@ const AdminWithdrawals = () => {
   useEffect(() => { load(); }, []);
   const load = async () => { setLoading(true); setItems(await getAllWithdrawals()); setLoading(false); };
 
-  const handleApprove = async (w) => { await approveWithdrawal(w.id, w.userId, w.amount); toast.success('Approved'); load(); };
+  const handleApprove = async (w) => { await approveWithdrawal(w.id, w.userId, w.amount); toast.success('Withdrawal marked successful'); load(); };
   const handleReject = async (w) => { await rejectWithdrawal(w.id); toast.success('Rejected'); load(); };
 
   const filtered = filter === 'all' ? items : items.filter(w => w.status === filter);
@@ -24,7 +24,9 @@ const AdminWithdrawals = () => {
       <h1 className="font-outfit font-bold text-xl text-white mb-4">Withdrawals</h1>
       <div className="flex gap-2 mb-4">
         {['all', 'pending', 'approved', 'rejected'].map(f => (
-          <button key={f} onClick={() => setFilter(f)} className={`px-3 py-1.5 rounded-lg text-xs font-semibold capitalize ${filter === f ? 'bg-indigo-600 text-white' : 'bg-white/5 text-gray-400'}`}>{f}</button>
+          <button key={f} onClick={() => setFilter(f)} className={`px-3 py-1.5 rounded-lg text-xs font-semibold capitalize ${filter === f ? 'bg-indigo-600 text-white' : 'bg-white/5 text-gray-400'}`}>
+            {f === 'approved' ? 'successful' : f}
+          </button>
         ))}
       </div>
       <div className="space-y-2">
@@ -35,7 +37,7 @@ const AdminWithdrawals = () => {
                 <p className="text-white font-semibold text-sm">{w.userName || w.email}</p>
                 <p className="text-gray-500 text-[10px]">{formatTime(w.createdAt)}</p>
               </div>
-              <span className={`badge-${w.status}`}>{w.status}</span>
+              <span className={`badge-${w.status}`}>{w.status === 'approved' ? 'successful' : w.status}</span>
             </div>
             <div className="flex items-center justify-between">
               <div>
@@ -44,7 +46,7 @@ const AdminWithdrawals = () => {
               </div>
               {w.status === 'pending' && (
                 <div className="flex gap-2">
-                  <button onClick={() => handleApprove(w)} className="px-3 py-1.5 rounded-lg bg-green-600/20 text-green-400 text-xs font-semibold">Approve</button>
+                  <button onClick={() => handleApprove(w)} className="px-3 py-1.5 rounded-lg bg-green-600/20 text-green-400 text-xs font-semibold">Successful</button>
                   <button onClick={() => handleReject(w)} className="px-3 py-1.5 rounded-lg bg-rose-600/20 text-rose-400 text-xs font-semibold">Reject</button>
                 </div>
               )}

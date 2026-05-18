@@ -7,11 +7,11 @@ import toast from 'react-hot-toast';
 
 const quickAmounts = [
   { amount: 100, label: 'STARTER' },
-  { amount: 500, label: 'POPULAR' },
-  { amount: 1000, label: 'BEST VALUE', hot: true },
-  { amount: 2000, label: 'PREMIUM' },
-  { amount: 5000, label: 'VIP' },
-  { amount: 10000, label: 'ULTIMATE' },
+  { amount: 300, label: 'POPULAR' },
+  { amount: 500, label: 'BEST VALUE', hot: true },
+  { amount: 1000, label: 'PREMIUM' },
+  { amount: 2000, label: 'VIP' },
+  { amount: 5000, label: 'ULTIMATE' },
 ];
 
 const DepositPage = () => {
@@ -23,13 +23,13 @@ const DepositPage = () => {
   const [history, setHistory] = useState([]);
   const [view, setView] = useState('recharge'); // recharge | payment | history
   const [paymentMethod, setPaymentMethod] = useState('upi');
-  const [settings, setSettings] = useState({ 
-    upiId: 'doublepatti@upi', 
-    qrUrl: 'upi://pay?pa=doublepatti@upi&pn=DoublePatti&cu=INR' 
+  const [settings, setSettings] = useState({
+    upiId: 'doublepatti@upi',
+    qrUrl: 'upi://pay?pa=doublepatti@upi&pn=DoublePatti&cu=INR'
   });
 
-  useEffect(() => { 
-    loadHistory(); 
+  useEffect(() => {
+    loadHistory();
     loadSettings();
   }, []);
 
@@ -43,9 +43,9 @@ const DepositPage = () => {
     }
   };
 
-  const loadHistory = async () => { 
+  const loadHistory = async () => {
     const data = await getDepositHistory();
-    setHistory(data); 
+    setHistory(data);
   };
 
   const handleRechargeClick = () => {
@@ -63,13 +63,13 @@ const DepositPage = () => {
       return;
     }
     setLoading(true);
-    try { 
-      await createDepositRequest(Number(amount), transactionId); 
-      setAmount(''); 
-      setTransactionId(''); 
+    try {
+      await createDepositRequest(Number(amount), transactionId);
+      setAmount('');
+      setTransactionId('');
       toast.success('Submitted! Credited after verification.');
       setView('history');
-      loadHistory(); 
+      loadHistory();
     } catch (err) {
       toast.error('System busy. Try later.');
     }
@@ -79,10 +79,10 @@ const DepositPage = () => {
   return (
     <div className="min-h-screen bg-[#050505] text-white font-['Inter',sans-serif] pb-32">
       <div className="max-w-md mx-auto px-5">
-        
+
         {/* Header - Matches Screenshot */}
         <header className="flex items-center gap-4 py-8">
-          <motion.button 
+          <motion.button
             whileTap={{ scale: 0.9 }}
             onClick={() => view === 'payment' ? setView('recharge') : navigate('/home')}
             className="w-11 h-11 rounded-2xl bg-[#1a1a1a] flex items-center justify-center border border-white/5"
@@ -123,7 +123,7 @@ const DepositPage = () => {
                 </label>
                 <div className="relative group">
                   <div className="absolute left-6 top-1/2 -translate-y-1/2 text-indigo-500 font-bold text-2xl group-focus-within:text-indigo-400 transition-colors">₹</div>
-                  <input 
+                  <input
                     type="number"
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
@@ -140,14 +140,13 @@ const DepositPage = () => {
                 </label>
                 <div className="grid grid-cols-2 gap-4">
                   {quickAmounts.map((item) => (
-                    <button 
+                    <button
                       key={item.amount}
                       onClick={() => setAmount(item.amount.toString())}
-                      className={`relative py-6 px-4 rounded-[24px] border-2 transition-all flex flex-col items-center justify-center gap-2 ${
-                        Number(amount) === item.amount 
-                          ? 'bg-indigo-600/10 border-amber-500 shadow-[0_0_25px_rgba(245,158,11,0.2)]' 
+                      className={`relative py-6 px-4 rounded-[24px] border-2 transition-all flex flex-col items-center justify-center gap-2 ${Number(amount) === item.amount
+                          ? 'bg-indigo-600/10 border-amber-500 shadow-[0_0_25px_rgba(245,158,11,0.2)]'
                           : 'bg-[#121212] border-white/5 hover:border-white/10'
-                      }`}
+                        }`}
                     >
                       {item.hot && (
                         <div className="absolute -top-3 -right-1 bg-gradient-to-r from-orange-500 to-red-600 text-[10px] font-black px-3 py-1 rounded-full flex items-center gap-1 shadow-lg z-10">
@@ -167,13 +166,12 @@ const DepositPage = () => {
                   <span>🏦</span> Payment Channel
                 </label>
                 <div className="space-y-3">
-                  <button 
+                  <button
                     onClick={() => setPaymentMethod('upi')}
-                    className={`w-full p-6 rounded-[28px] flex items-center justify-between border-2 transition-all ${
-                      paymentMethod === 'upi' 
-                        ? 'bg-gradient-to-r from-indigo-600/40 to-violet-600/40 border-indigo-500 shadow-xl shadow-indigo-900/20' 
+                    className={`w-full p-6 rounded-[28px] flex items-center justify-between border-2 transition-all ${paymentMethod === 'upi'
+                        ? 'bg-gradient-to-r from-indigo-600/40 to-violet-600/40 border-indigo-500 shadow-xl shadow-indigo-900/20'
                         : 'bg-[#121212] border-white/5'
-                    }`}
+                      }`}
                   >
                     <div className="flex items-center gap-5">
                       <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-2xl ${paymentMethod === 'upi' ? 'bg-white/20' : 'bg-white/5'}`}>📱</div>
@@ -183,7 +181,7 @@ const DepositPage = () => {
                       {paymentMethod === 'upi' && <div className="w-3.5 h-3.5 bg-white rounded-full shadow-[0_0_12px_white]" />}
                     </div>
                   </button>
-                  
+
                   <div className="w-full p-6 rounded-[28px] flex items-center justify-between border-2 border-white/5 bg-[#121212] opacity-40 cursor-not-allowed">
                     <div className="flex items-center gap-5">
                       <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-2xl grayscale">🏧</div>
@@ -196,7 +194,7 @@ const DepositPage = () => {
 
               {/* Recharge Button */}
               <div className="pt-8">
-                <motion.button 
+                <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={handleRechargeClick}
@@ -205,7 +203,7 @@ const DepositPage = () => {
                   Recharge Now
                 </motion.button>
 
-                <button 
+                <button
                   onClick={() => setView('history')}
                   className="w-full py-6 text-gray-600 text-sm font-bold uppercase tracking-widest hover:text-indigo-400 transition-colors"
                 >
@@ -226,9 +224,9 @@ const DepositPage = () => {
               <div className="bg-[#121212] border border-white/5 rounded-[32px] p-8 text-center space-y-6 shadow-2xl">
                 <h3 className="text-indigo-400 font-bold uppercase tracking-widest text-[10px]">Step 2: Pay & Submit UTR</h3>
                 <div className="bg-white p-4 rounded-3xl w-48 h-48 mx-auto shadow-2xl">
-                  <img 
-                    src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(settings.qrUrl)}`} 
-                    alt="QR" 
+                  <img
+                    src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(settings.qrUrl)}`}
+                    alt="QR"
                     className="w-full h-full"
                   />
                 </div>
@@ -243,7 +241,7 @@ const DepositPage = () => {
 
               <div className="space-y-4">
                 <label className="text-sm font-bold text-gray-400 ml-1">Transaction UTR Number</label>
-                <input 
+                <input
                   type="text"
                   value={transactionId}
                   onChange={(e) => setTransactionId(e.target.value)}
@@ -252,7 +250,7 @@ const DepositPage = () => {
                 />
               </div>
 
-              <motion.button 
+              <motion.button
                 whileTap={{ scale: 0.98 }}
                 onClick={handleSubmit}
                 disabled={loading || !transactionId}
@@ -280,10 +278,9 @@ const DepositPage = () => {
                     <p className="text-xl font-bold">₹{d.amount}</p>
                     <p className="text-[10px] text-gray-500 font-medium">{formatTime(d.createdAt)}</p>
                   </div>
-                  <span className={`text-[9px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full ${
-                    d.status === 'completed' ? 'text-green-400 bg-green-400/10' : 
-                    d.status === 'pending' ? 'text-amber-400 bg-amber-400/10' : 'text-red-400 bg-red-400/10'
-                  }`}>
+                  <span className={`text-[9px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full ${d.status === 'completed' ? 'text-green-400 bg-green-400/10' :
+                      d.status === 'pending' ? 'text-amber-400 bg-amber-400/10' : 'text-red-400 bg-red-400/10'
+                    }`}>
                     {d.status}
                   </span>
                 </div>

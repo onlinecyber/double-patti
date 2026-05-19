@@ -176,22 +176,23 @@ const HomePage = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="grid grid-cols-1 sm:grid-cols-3 gap-3"
+            className="grid grid-cols-2 sm:grid-cols-4 gap-3"
           >
             {[
+              { join: 10, win: '20,000' },
               { join: 20, win: '50,000' },
               { join: 50, win: '1,50,000' },
               { join: 100, win: '5,00,000' },
             ].map((tier, i) => (
-              <div key={i} className="bg-slate-800/40 backdrop-blur-md rounded-xl p-3.5 border border-white/5 flex items-center justify-between shadow-sm hover:border-indigo-500/30 transition-colors">
-                <div className="flex items-center gap-2">
-                  <span className="text-gray-400 text-[11px] font-medium uppercase">Join</span>
-                  <span className="text-amber-400 text-sm font-black">₹{tier.join}</span>
-                </div>
-                <div className="h-px flex-1 bg-white/5 mx-2" />
+              <div key={i} className="bg-slate-800/40 backdrop-blur-md rounded-xl p-3 border border-white/5 flex items-center justify-between shadow-sm hover:border-indigo-500/30 transition-colors">
                 <div className="flex items-center gap-1.5">
-                  <span className="text-gray-400 text-[11px] font-medium uppercase">Win</span>
-                  <span className="text-emerald-400 text-sm font-black">₹{tier.win}</span>
+                  <span className="text-gray-400 text-[10px] font-bold uppercase">Join</span>
+                  <span className="text-amber-400 text-xs sm:text-sm font-black">₹{tier.join}</span>
+                </div>
+                <div className="h-px flex-1 bg-white/5 mx-1.5" />
+                <div className="flex items-center gap-1">
+                  <span className="text-gray-400 text-[10px] font-bold uppercase">Win</span>
+                  <span className="text-emerald-400 text-xs sm:text-sm font-black">₹{tier.win}</span>
                 </div>
               </div>
             ))}

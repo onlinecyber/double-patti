@@ -20,7 +20,16 @@ const GameCard = ({ game, onJoinClick }) => {
     setShowHistory(true);
     try {
       const data = await getGameResultsHistory(game.id);
-      setHistoryList(data);
+      if (data.length === 0 && lastResult) {
+        // Fallback: If DB history is empty but a last result exists, show it
+        setHistoryList([{
+          id: 'current-last-result',
+          winningNumbers: lastResult,
+          dateStr: 'Last Declared'
+        }]);
+      } else {
+        setHistoryList(data);
+      }
     } catch (e) {
       console.error(e);
     } finally {

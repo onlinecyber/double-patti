@@ -197,7 +197,8 @@ export const declareResult = async (gameId, winningNumbers) => {
 
     let prize = 0;
     if (isWin) {
-      if (bet.entryFee === 20) prize = 50000;
+      if (bet.entryFee === 10) prize = 20000;
+      else if (bet.entryFee === 20) prize = 50000;
       else if (bet.entryFee === 50) prize = 150000;
       else if (bet.entryFee === 100) prize = 500000;
       else prize = bet.entryFee * 100; // Default 100x

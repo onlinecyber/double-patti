@@ -5,9 +5,9 @@ import toast from 'react-hot-toast';
 const NumberSelectionModal = ({ game, onClose, onSubmit }) => {
   const [selected, setSelected] = useState([]);
   const [submitting, setSubmitting] = useState(false);
-  const [betAmount, setBetAmount] = useState(20);
+  const [betAmount, setBetAmount] = useState(10);
 
-  const amounts = [20, 50, 100];
+  const amounts = [10, 20, 50, 100];
 
   // Generate numbers 0 to 9
   const numbers = Array.from({ length: 10 }, (_, i) => i);

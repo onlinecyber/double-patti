@@ -191,3 +191,24 @@ export const listenToGameResult = (gameId, callback) => {
     }
   });
 };
+
+export const getGameResultsHistory = async (gameId) => {
+  try {
+    const q = query(
+      collection(db, 'gameResults'),
+      where('gameId', '==', gameId)
+    );
+    const snap = await getDocs(q);
+    const results = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    
+    // Sort in memory to avoid composite index requirement
+    return results.sort((a, b) => {
+      const timeA = a.declaredAt?.toMillis ? a.declaredAt.toMillis() : (a.declaredAt?.seconds || 0);
+      const timeB = b.declaredAt?.toMillis ? b.declaredAt.toMillis() : (b.declaredAt?.seconds || 0);
+      return timeB - timeA;
+    }).slice(0, 10);
+  } catch (error) {
+    console.error("Error fetching game results history:", error);
+    return [];
+  }
+};

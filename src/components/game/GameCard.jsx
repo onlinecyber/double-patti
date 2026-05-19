@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../contexts/AuthContext';
-import { listenToActiveBet, listenToGameResult } from '../../services/gameService';
+import { listenToActiveBet, listenToGameResult, getGameResultsHistory } from '../../services/gameService';
 
 const GameCard = ({ game, onJoinClick }) => {
   const { userData } = useAuth();
@@ -9,6 +9,24 @@ const GameCard = ({ game, onJoinClick }) => {
   const [lastResult, setLastResult] = useState(null);
   const [isDeclaredToday, setIsDeclaredToday] = useState(false);
   const [loading, setLoading] = useState(true);
+
+  // Game slot history states
+  const [showHistory, setShowHistory] = useState(false);
+  const [historyList, setHistoryList] = useState([]);
+  const [historyLoading, setHistoryLoading] = useState(false);
+
+  const fetchHistory = async () => {
+    setHistoryLoading(true);
+    setShowHistory(true);
+    try {
+      const data = await getGameResultsHistory(game.id);
+      setHistoryList(data);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setHistoryLoading(false);
+    }
+  };
 
   useEffect(() => {
     // Listen to real-time updates for the last declared result of this game
@@ -68,8 +86,9 @@ const GameCard = ({ game, onJoinClick }) => {
   }, [userData?.id, game.id]);
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
+    <>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       whileHover={{ y: -5 }}
       className="group relative flex flex-col rounded-2xl overflow-hidden bg-[#12142b]/80 backdrop-blur-xl border border-indigo-500/20 shadow-lg hover:border-indigo-400/40 transition-all duration-300"
@@ -84,14 +103,21 @@ const GameCard = ({ game, onJoinClick }) => {
         </div>
         
         {/* MIDDLE: Details Row */}
-        <div className="flex items-center justify-center w-full mb-6 sm:mb-8">
-          <div className="flex items-center gap-2 bg-black/30 px-4 py-2 rounded-lg border border-white/5">
+        <div className="flex items-center justify-between w-full gap-3 mb-6 sm:mb-8">
+          <div className="flex items-center gap-2 bg-black/30 px-4 py-2.5 rounded-xl border border-white/5 flex-1 justify-center">
             <svg className="w-3.5 h-3.5 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
             <div className="flex flex-col text-left">
               <span className="text-[9px] text-gray-500 font-bold uppercase tracking-widest leading-none mb-1">Draw Time</span>
               <span className="text-xs sm:text-sm text-amber-400 font-bold leading-none">{game.openingTime}</span>
             </div>
           </div>
+
+          <button
+            onClick={fetchHistory}
+            className="flex items-center gap-1.5 bg-indigo-500/10 hover:bg-indigo-500/25 px-4 py-2.5 rounded-xl border border-indigo-500/25 active:scale-95 transition-all text-xs text-indigo-300 font-extrabold shadow-sm shrink-0"
+          >
+            <span>📜</span> History
+          </button>
         </div>
 
         {/* BOTTOM: Dynamic Status Area */}
@@ -192,7 +218,91 @@ const GameCard = ({ game, onJoinClick }) => {
         </div>
       </div>
     </motion.div>
-  );
+
+    <AnimatePresence>
+      {showHistory && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm px-4"
+        >
+          <motion.div
+            initial={{ scale: 0.95, y: 30 }}
+            animate={{ scale: 1, y: 0 }}
+            exit={{ scale: 0.95, y: 30 }}
+            className="glass-card-strong w-full max-w-sm overflow-hidden relative"
+          >
+            {/* Modal Header */}
+            <div className="p-4 border-b border-white/5 flex items-center justify-between">
+              <div>
+                <h3 className="font-outfit font-black text-sm text-white">🎰 Game Result History</h3>
+                <p className="text-[10px] text-gray-400 font-bold mt-0.5">Slot: {game.openingTime}</p>
+              </div>
+              <button
+                onClick={() => setShowHistory(false)}
+                className="w-7 h-7 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-gray-400 hover:text-white transition-colors"
+              >
+                ×
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-4 max-h-[320px] overflow-y-auto custom-scrollbar space-y-2">
+              {historyLoading ? (
+                <div className="flex flex-col items-center justify-center py-12 gap-3">
+                  <div className="w-8 h-8 border-3 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+                  <span className="text-[10px] text-indigo-400 font-bold uppercase tracking-wider animate-pulse">Fetching history...</span>
+                </div>
+              ) : historyList.length === 0 ? (
+                <div className="text-center py-12">
+                  <span className="text-3xl block mb-2">📜</span>
+                  <p className="text-xs text-gray-400 font-bold">No results found for this slot yet.</p>
+                  <p className="text-[9px] text-gray-600 mt-1">History updates automatically as results are declared.</p>
+                </div>
+              ) : (
+                historyList.map((item, idx) => (
+                  <motion.div
+                    key={item.id || idx}
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: idx * 0.05 }}
+                    className="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/5"
+                  >
+                    <div>
+                      <p className="text-xs text-white font-bold">{item.dateStr}</p>
+                      <p className="text-[9px] text-gray-500 font-medium">Double Patti Slot</p>
+                    </div>
+                    <div className="flex gap-1.5">
+                      {item.winningNumbers?.map((num, i) => (
+                        <div
+                          key={i}
+                          className="w-7 h-7 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/30 flex items-center justify-center font-black text-xs shadow-[0_0_8px_rgba(245,158,11,0.1)]"
+                        >
+                          {num}
+                        </div>
+                      ))}
+                    </div>
+                  </motion.div>
+                ))
+              )}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="p-3 border-t border-white/5 bg-black/25">
+              <button
+                onClick={() => setShowHistory(false)}
+                className="btn-outline w-full py-2.5 text-xs font-bold"
+              >
+                Close
+              </button>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  </>
+);
 };
 
 export default GameCard;

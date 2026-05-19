@@ -162,6 +162,15 @@ export const declareResult = async (gameId, winningNumbers) => {
       status: 'completed',
       declaredAt: serverTimestamp()
     }, { merge: true });
+
+    // Archive the declared result in gameResults collection
+    const historyRef = doc(collection(db, 'gameResults'));
+    await setDoc(historyRef, {
+      gameId,
+      winningNumbers,
+      declaredAt: serverTimestamp(),
+      dateStr: new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })
+    });
   } catch (e) {
     console.error("Error setting game result:", e);
   }

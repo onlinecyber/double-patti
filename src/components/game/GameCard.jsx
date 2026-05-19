@@ -160,7 +160,7 @@ const GameCard = ({ game, onJoinClick }) => {
               {lastResult && (
                 <div className="w-full p-3 rounded-xl bg-black/35 border border-white/5 flex flex-col items-center">
                   <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider block mb-2">
-                    {isDeclaredToday ? "Today's Winning Result" : "Last Result"}
+                    {isDeclaredToday ? "Aaj Ka Result" : "Kal Ka Result"}
                   </span>
                   <div className="flex gap-2">
                     {lastResult.map((num, i) => (
